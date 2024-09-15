@@ -107,7 +107,7 @@ const _latestUpdates: Array<{ title: string; bullet_points: string[] }> = [
     bullet_points: [
       "We welcome all contributions from the community.",
       "Found a bug or have some suggestions? Create a GitHub issue!",
-      "Repo: https://github.com/thirdweb-example/marketplace-template",
+      "Repo: https://github.com/thirdweb-example/The Digital Art Gallery",
     ],
   },
 ];

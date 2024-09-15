@@ -15,14 +15,14 @@
 - Support for multiple chains
 - Create listings with custom payment currencies
 - Public profile page: [vitalik.eth's Profile](https://marketplace.thirdweb-preview.com/profile/vitalik.eth)
-- _and [more to come](https://github.com/thirdweb-example/marketplace-template/issues?q=is%3Aissue+is%3Aopen+feature+request)_
+- _and [more to come](https://github.com/thirdweb-example/The Digital Art Gallery/issues?q=is%3Aissue+is%3Aopen+feature+request)_
 
-Want to request a feature? [Create a GitHub issue!](https://github.com/thirdweb-example/marketplace-template/issues/new)
+Want to request a feature? [Create a GitHub issue!](https://github.com/thirdweb-example/The Digital Art Gallery/issues/new)
 
 ## Installation
-### 1. Clone the template or [fork it](https://github.com/thirdweb-example/marketplace-template/fork)
+### 1. Clone the template or [fork it](https://github.com/thirdweb-example/The Digital Art Gallery/fork)
 ```bash
-git clone https://github.com/thirdweb-example/marketplace-template
+git clone https://github.com/thirdweb-example/The Digital Art Gallery
 ```
 
 ### 2. Install the dependencies
