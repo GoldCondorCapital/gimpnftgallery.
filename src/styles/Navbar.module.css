@@ -1,0 +1,39 @@
+/* Navbar.module.css */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: var(--background);
+  color: var(--text-color);
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+.profileMenu {
+  display: flex;
+  gap: 20px;
+}
+
+.themeButton {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+/* Dark mode variables */
+body.dark-mode {
+  --background: #1a202c;
+  --text-color: #fff;
+  --link-color: #fff;
+  --button-bg: #fff;
+  --button-text: #1a202c;
+}

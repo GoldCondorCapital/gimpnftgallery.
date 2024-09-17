@@ -1,19 +1,5 @@
-import {
-  Box,
-  Flex,
-  Heading,
-  Img,
-  SimpleGrid,
-  Tab,
-  TabList,
-  Tabs,
-  Text,
-  useBreakpointValue,
-} from "@chakra-ui/react";
 import { blo } from "blo";
 import { shortenAddress } from "thirdweb/utils";
-import type { Account } from "thirdweb/wallets";
-import { ProfileMenu } from "./Menu";
 import { useState } from "react";
 import { NFT_CONTRACTS, type NftContract } from "@/consts/nft_contracts";
 import {
@@ -27,11 +13,11 @@ import { getOwnedERC721s } from "@/extensions/getOwnedERC721s";
 import { OwnedItem } from "./OwnedItem";
 import { getAllValidListings } from "thirdweb/extensions/marketplace";
 import { MARKETPLACE_CONTRACTS } from "@/consts/marketplace_contract";
-import { Link } from "@chakra-ui/next-js";
+import Link from "next/link";
 import { getOwnedERC1155s } from "@/extensions/getOwnedERC1155s";
-import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { useGetENSAvatar } from "@/hooks/useGetENSAvatar";
 import { useGetENSName } from "@/hooks/useGetENSName";
+import "../styles/global.css"; // Import global CSS
 
 type Props = {
   address: string;
@@ -55,7 +41,6 @@ export function ProfileSection(props: Props) {
 
   const {
     data,
-    error,
     isLoading: isLoadingOwnedNFTs,
   } = useReadContract(
     selectedCollection.type === "ERC1155" ? getOwnedERC1155s : getOwnedERC721s,
@@ -92,124 +77,101 @@ export function ProfileSection(props: Props) {
           item.creatorAddress.toLowerCase() === address.toLowerCase()
       )
     : [];
-  const columns = useBreakpointValue({ base: 1, sm: 2, md: 2, lg: 2, xl: 4 });
-  return (
-    <Box px={{ lg: "50px", base: "20px" }}>
-      <Flex direction={{ lg: "row", md: "column", sm: "column" }} gap={5}>
-        <Img
-          src={ensAvatar ?? blo(address as `0x${string}`)}
-          w={{ lg: 150, base: 100 }}
-          rounded="8px"
-        />
-        <Box my="auto">
-          <Heading>{ensName ?? "Unnamed"}</Heading>
-          <Text color="gray">{shortenAddress(address)}</Text>
-        </Box>
-      </Flex>
 
-      <Flex direction={{ lg: "row", base: "column" }} gap="10" mt="20px">
+  return (
+    <div className="profile-section-container">
+      <div className="profile-header">
+        <img
+          src={ensAvatar ?? blo(address as `0x${string}`)}
+          alt="Profile Avatar"
+          className="profile-avatar"
+        />
+        <div>
+          <h2>{ensName ?? "Unnamed"}</h2>
+          <p className="profile-address">{shortenAddress(address)}</p>
+        </div>
+      </div>
+
+      <div className="profile-content">
         <ProfileMenu
           selectedCollection={selectedCollection}
           setSelectedCollection={setSelectedCollection}
         />
         {isLoadingOwnedNFTs ? (
-          <Box>
-            <Text>Loading...</Text>
-          </Box>
+          <div className="loading">Loading...</div>
         ) : (
           <>
-            <Box>
-              <Flex direction="row" justifyContent="space-between" px="12px">
-                <Tabs
-                  variant="soft-rounded"
-                  onChange={(index) => setTabIndex(index)}
-                  isLazy
-                  defaultIndex={0}
+            <div className="tabs-container">
+              <div className="tabs">
+                <button
+                  className={`tab-button ${tabIndex === 0 ? "active" : ""}`}
+                  onClick={() => setTabIndex(0)}
                 >
-                  <TabList>
-                    <Tab>Owned ({data?.length})</Tab>
-                    <Tab>Listings ({listings.length || 0})</Tab>
-                    {/* <Tab>Auctions ({allAuctions?.length || 0})</Tab> */}
-                  </TabList>
-                </Tabs>
-                <Link
-                  href={`/collection/${selectedCollection.chain.id}/${selectedCollection.address}`}
-                  color="gray"
+                  Owned ({data?.length})
+                </button>
+                <button
+                  className={`tab-button ${tabIndex === 1 ? "active" : ""}`}
+                  onClick={() => setTabIndex(1)}
                 >
-                  View collection <ExternalLinkIcon mx="2px" />
-                </Link>
-              </Flex>
-              <SimpleGrid columns={columns} spacing={4} p={4}>
-                {tabIndex === 0 ? (
-                  <>
-                    {data && data.length > 0 ? (
-                      <>
-                        {data?.map((item) => (
-                          <OwnedItem
-                            key={item.id.toString()}
-                            nftCollection={contract}
-                            nft={item}
-                          />
-                        ))}
-                      </>
-                    ) : (
-                      <Box>
-                        <Text>
-                          {isYou
-                            ? "You"
-                            : ensName
-                            ? ensName
-                            : shortenAddress(address)}{" "}
-                          {isYou ? "do" : "does"} not own any NFT in this
-                          collection
-                        </Text>
-                      </Box>
-                    )}
-                  </>
+                  Listings ({listings.length || 0})
+                </button>
+              </div>
+              <Link
+                href={`/collection/${selectedCollection.chain.id}/${selectedCollection.address}`}
+                className="view-collection-link"
+              >
+                View collection
+              </Link>
+            </div>
+
+            <div className="grid-container">
+              {tabIndex === 0 ? (
+                data && data.length > 0 ? (
+                  data?.map((item) => (
+                    <OwnedItem
+                      key={item.id.toString()}
+                      nftCollection={contract}
+                      nft={item}
+                    />
+                  ))
                 ) : (
-                  <>
-                    {listings && listings.length > 0 ? (
-                      <>
-                        {listings?.map((item) => (
-                          <Box
-                            key={item.id}
-                            rounded="12px"
-                            as={Link}
-                            href={`/collection/${contract.chain.id}/${
-                              contract.address
-                            }/token/${item.asset.id.toString()}`}
-                            _hover={{ textDecoration: "none" }}
-                            w={250}
-                          >
-                            <Flex direction="column">
-                              <MediaRenderer
-                                client={client}
-                                src={item.asset.metadata.image}
-                              />
-                              <Text mt="12px">
-                                {item.asset?.metadata?.name ?? "Unknown item"}
-                              </Text>
-                              <Text>Price</Text>
-                              <Text>
-                                {toEther(item.pricePerToken)}{" "}
-                                {item.currencyValuePerToken.symbol}
-                              </Text>
-                            </Flex>
-                          </Box>
-                        ))}
-                      </>
-                    ) : (
-                      <Box>
-                        You do not have any listing with this collection
-                      </Box>
-                    )}
-                  </>
-                )}
-              </SimpleGrid>
-            </Box>
+                  <div>
+                    <p>
+                      {isYou ? "You" : ensName ? ensName : shortenAddress(address)}{" "}
+                      {isYou ? "do" : "does"} not own any NFT in this collection
+                    </p>
+                  </div>
+                )
+              ) : (
+                listings && listings.length > 0 ? (
+                  listings?.map((item) => (
+                    <div className="nft-card" key={item.id}>
+                      <Link
+                        href={`/collection/${contract.chain.id}/${contract.address}/token/${item.asset.id.toString()}`}
+                        className="nft-link"
+                      >
+                        <div className="nft-card-content">
+                          <MediaRenderer
+                            client={client}
+                            src={item.asset.metadata.image}
+                          />
+                          <p>{item.asset?.metadata?.name ?? "Unknown item"}</p>
+                          <p>Price</p>
+                          <p>{toEther(item.pricePerToken)} {item.currencyValuePerToken.symbol}</p>
+                        </div>
+                      </Link>
+                    </div>
+                ))
+                ) : (
+                  <div>
+                    You do not have any listing with this collection
+                  </div>
+                )
+              )}
+            </div>
           </>
         )}
-      </Flex>
-    </Box>
+      </div>
+    </div>
   );
 }

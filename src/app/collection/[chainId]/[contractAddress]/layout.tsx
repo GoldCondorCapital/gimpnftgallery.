@@ -1,19 +1,15 @@
-import MarketplaceProvider from "@/hooks/useMarketplaceContext";
-import type { ReactNode } from "react";
+import { ChakraProvider } from '@chakra-ui/react';
+import theme from '../theme'; // Optional custom theme
+import '../styles/globals.css'; // Optional global styles
 
-export default function MarketplaceLayout({
-  children,
-  params,
-}: {
-  children: ReactNode;
-  params: { contractAddress: string; chainId: string };
-}) {
+export default function RootLayout({ children }) {
   return (
-    <MarketplaceProvider
-      chainId={params.chainId}
-      contractAddress={params.contractAddress}
-    >
-      {children}
-    </MarketplaceProvider>
+    <html lang="en">
+      <body>
+        <ChakraProvider theme={theme}>
+          {children}
+        </ChakraProvider>
+      </body>
+    </html>
   );
 }

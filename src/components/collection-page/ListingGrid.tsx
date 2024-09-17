@@ -1,49 +1,32 @@
 import { client } from "@/consts/client";
 import { useMarketplaceContext } from "@/hooks/useMarketplaceContext";
-import { Link } from "@chakra-ui/next-js";
-import {
-  Box,
-  Flex,
-  SimpleGrid,
-  useBreakpointValue,
-  Text,
-} from "@chakra-ui/react";
+import Link from "next/link";
 import { MediaRenderer } from "thirdweb/react";
+import "../styles/global.css"; // Assuming you're using a global CSS file
 
 export function ListingGrid() {
   const { listingsInSelectedCollection, nftContract } = useMarketplaceContext();
   const len = listingsInSelectedCollection.length;
-  const columns = useBreakpointValue({
-    base: 1,
-    sm: Math.min(len, 2),
-    md: Math.min(len, 4),
-    lg: Math.min(len, 4),
-    xl: Math.min(len, 5),
-  });
-  if (!listingsInSelectedCollection || !len) return <></>;
+
+  if (!listingsInSelectedCollection || !len) return null;
+
   return (
-    <SimpleGrid columns={columns} spacing={4} p={4} mx="auto" mt="20px">
+    <div className="grid-container">
       {listingsInSelectedCollection.map((item) => (
-        <Box
-          key={item.id}
-          rounded="12px"
-          as={Link}
-          href={`/collection/${nftContract.chain.id}/${
-            nftContract.address
-          }/token/${item.asset.id.toString()}`}
-          _hover={{ textDecoration: "none" }}
-        >
-          <Flex direction="column">
-            <MediaRenderer client={client} src={item.asset.metadata.image} />
-            <Text>{item.asset?.metadata?.name ?? "Unknown item"}</Text>
-            <Text>Price</Text>
-            <Text>
-              {item.currencyValuePerToken.displayValue}{" "}
-              {item.currencyValuePerToken.symbol}
-            </Text>
-          </Flex>
-        </Box>
+        <div className="grid-card" key={item.id}>
+          <Link href={`/collection/${nftContract.chain.id}/${nftContract.address}/token/${item.asset.id.toString()}`}>
+            <div className="card-content">
+              <MediaRenderer client={client} src={item.asset.metadata.image} />
+              <p className="nft-name">{item.asset?.metadata?.name ?? "Unknown item"}</p>
+              <p className="nft-price">Price</p>
+              <p className="nft-value">
+                {item.currencyValuePerToken.displayValue}{" "}
+                {item.currencyValuePerToken.symbol}
+              </p>
+            </div>
+          </Link>
+        </div>
       ))}
-    </SimpleGrid>
+    </div>
   );
 }
