@@ -4,14 +4,14 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  background-color: var(--background);
-  color: var(--text-color);
+  background-color: var(--background); /* Use global variable */
+  color: var(--text-color); /* Use global variable */
 }
 
 .logo {
   font-size: 24px;
   font-weight: bold;
-  color: var(--link-color);
+  color: var(--link-color); /* Use global variable */
   text-decoration: none;
 }
 
@@ -21,19 +21,10 @@
 }
 
 .themeButton {
-  background-color: var(--button-bg);
-  color: var(--button-text);
+  background-color: var(--button-bg); /* Use global variable */
+  color: var(--button-text); /* Use global variable */
   border: none;
   padding: 8px 16px;
   cursor: pointer;
   border-radius: 5px;
-}
-
-/* Dark mode variables */
-body.dark-mode {
-  --background: #1a202c;
-  --text-color: #fff;
-  --link-color: #fff;
-  --button-bg: #fff;
-  --button-text: #1a202c;
 }

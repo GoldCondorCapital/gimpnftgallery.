@@ -1,5 +1,6 @@
 import { client } from "@/consts/client";
-import { useMarketplaceContext } from "@/hooks/useMarketplaceContext";
+import { useMarketplaceContext } from "../../hooks/useMarketplaceContext";
+
 import Link from "next/link";
 import { MediaRenderer } from "thirdweb/react";
 import "../styles/global.css"; // Assuming you're using a global CSS file

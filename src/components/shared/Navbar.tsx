@@ -1,15 +1,35 @@
-"use client"; // Mark it as a client component
+"use client"; // Next.js directive to mark the component as client-side
 
 import Link from 'next/link';
-import { useState } from 'react';
-import styles from '@/styles/Navbar.module.css'; // Updated path for CSS module
+import { useState, useEffect } from 'react';
+import styles from '../../app/styles/Navbar.module.css';
+
+// Define the type for ProfileButton props
+interface ProfileButtonProps {
+  isLoggedIn: boolean;
+  handleLoginLogout: () => void;
+}
 
 export function Navbar() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-    document.body.classList.toggle('dark-mode'); // Toggle the dark mode class on the body
+  // Simulate user login state persisting across sessions (optional)
+  useEffect(() => {
+    const loggedInStatus = localStorage.getItem('isLoggedIn');
+    if (loggedInStatus === 'true') {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  // Toggle between login and logout
+  const handleLoginLogout = () => {
+    if (isLoggedIn) {
+      setIsLoggedIn(false);
+      localStorage.setItem('isLoggedIn', 'false'); // Clear local storage on logout
+    } else {
+      setIsLoggedIn(true);
+      localStorage.setItem('isLoggedIn', 'true'); // Set local storage on login
+    }
   };
 
   return (
@@ -19,25 +39,27 @@ export function Navbar() {
       </Link>
       <div className={styles.profileMenu}>
         {/* Profile Section */}
-        <ProfileButton />
+        <ProfileButton isLoggedIn={isLoggedIn} handleLoginLogout={handleLoginLogout} />
         {/* Toggle theme button */}
-        <button className={styles.themeButton} onClick={toggleTheme}>
-          {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+        <button className={styles.themeButton} onClick={() => { /* Theme toggle logic here */ }}>
+          {/* Theme toggle button logic */}
         </button>
       </div>
     </div>
   );
 }
 
-function ProfileButton() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Just a mock state
-
+// ProfileButton component with typed props
+function ProfileButton({ isLoggedIn, handleLoginLogout }: ProfileButtonProps) {
   return isLoggedIn ? (
     <div>
       <Link href="/profile">Profile</Link>
-      <button onClick={() => setIsLoggedIn(false)}>Logout</button>
+      <button onClick={handleLoginLogout}>Logout</button>
     </div>
   ) : (
-    <Link href="/login">Login</Link>
+    <div>
+      <Link href="/login">Login</Link>
+      <button onClick={handleLoginLogout}>Login</button>
+    </div>
   );
 }

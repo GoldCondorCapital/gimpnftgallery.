@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/shared/Navbar";
-import "../styles/global.css"; // Correct import path for global.css after moving
+import "./styles/global.css"; 
 
 
 

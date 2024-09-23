@@ -2,7 +2,8 @@
 
 import { NFT_CONTRACTS } from "@/consts/nft_contracts";
 import Link from "next/link";
-import "../styles/global.css"; // Correct import path for global.css after moving
+import "../app/styles//global.css"; 
+
 
 
 

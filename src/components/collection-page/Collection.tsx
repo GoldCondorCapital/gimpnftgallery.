@@ -1,15 +1,14 @@
 import { MediaRenderer, useReadContract } from "thirdweb/react";
 import { getNFT as getNFT721 } from "thirdweb/extensions/erc721";
 import { getNFT as getNFT1155 } from "thirdweb/extensions/erc1155";
-import { client } from "@/consts/client";
-import { Box, Flex, Heading, Tab, TabList, Tabs, Text } from "@chakra-ui/react";
+import { client } from "../../consts/client";
 import { useState } from "react";
-import { useMarketplaceContext } from "@/hooks/useMarketplaceContext";
+import { useMarketplaceContext } from "../../hooks/useMarketplaceContext";
 import { ListingGrid } from "./ListingGrid";
 import { AllNftsGrid } from "./AllNftsGrid";
+import "../../styles/global.css"; // Assuming you're using global.css
 
 export function Collection() {
-  // `0` is Listings, `1` is `Auctions`
   const [tabIndex, setTabIndex] = useState<number>(0);
   const {
     type,
@@ -20,12 +19,11 @@ export function Collection() {
     supplyInfo,
   } = useMarketplaceContext();
 
-  // In case the collection doesn't have a thumbnail, we use the image of the first NFT
   const { data: firstNFT, isLoading: isLoadingFirstNFT } = useReadContract(
     type === "ERC1155" ? getNFT1155 : getNFT721,
     {
       contract: nftContract,
-      tokenId: 0n,
+      tokenId: BigInt(0),
       queryOptions: {
         enabled: isLoading || !!contractMetadata?.image,
       },
@@ -34,10 +32,11 @@ export function Collection() {
 
   const thumbnailImage =
     contractMetadata?.image || firstNFT?.metadata.image || "";
+
   return (
     <>
-      <Box mt="24px">
-        <Flex direction="column" gap="4">
+      <div className="container">
+        <div className="media-wrapper">
           <MediaRenderer
             client={client}
             src={thumbnailImage}
@@ -49,48 +48,42 @@ export function Collection() {
               height: "200px",
             }}
           />
-          <Heading mx="auto">
+          <h1 className="heading">
             {contractMetadata?.name || "Unknown collection"}
-          </Heading>
+          </h1>
           {contractMetadata?.description && (
-            <Text
-              maxW={{ lg: "500px", base: "300px" }}
-              mx="auto"
-              textAlign="center"
-            >
+            <p className="description">
               {contractMetadata.description}
-            </Text>
+            </p>
           )}
 
-          <Tabs
-            variant="soft-rounded"
-            mx="auto"
-            mt="20px"
-            onChange={(index) => setTabIndex(index)}
-            isLazy
-          >
-            <TabList>
-              <Tab>Listings ({listingsInSelectedCollection.length || 0})</Tab>
-              <Tab>
+          <div className="tabs">
+            <div className="tab-list">
+              <button
+                className={`tab ${tabIndex === 0 ? "active-tab" : ""}`}
+                onClick={() => setTabIndex(0)}
+              >
+                Listings ({listingsInSelectedCollection.length || 0})
+              </button>
+              <button
+                className={`tab ${tabIndex === 1 ? "active-tab" : ""}`}
+                onClick={() => setTabIndex(1)}
+              >
                 All items{" "}
                 {supplyInfo
                   ? `(${(
-                      supplyInfo.endTokenId -
-                      supplyInfo.startTokenId +
-                      1n
+                      supplyInfo.endTokenId - supplyInfo.startTokenId + 1n
                     ).toString()})`
                   : ""}
-              </Tab>
-              {/* Support for English Auctions coming soon */}
-              {/* <Tab>Auctions ({allAuctions?.length || 0})</Tab> */}
-            </TabList>
-          </Tabs>
-        </Flex>
-      </Box>
-      <Flex direction="column">
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="content-wrapper">
         {tabIndex === 0 && <ListingGrid />}
         {tabIndex === 1 && <AllNftsGrid />}
-      </Flex>
+      </div>
     </>
   );
 }

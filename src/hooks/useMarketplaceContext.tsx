@@ -4,11 +4,7 @@ import { client } from "@/consts/client";
 import { MARKETPLACE_CONTRACTS } from "@/consts/marketplace_contract";
 import { NFT_CONTRACTS } from "@/consts/nft_contracts";
 import { SUPPORTED_TOKENS, Token } from "@/consts/supported_tokens";
-import {
-  getSupplyInfo,
-  SupplyInfo,
-} from "@/extensions/getLargestCirculatingTokenId";
-import { Box, Spinner } from "@chakra-ui/react";
+import { getSupplyInfo, SupplyInfo } from "../extensions/getLargestCirculatingTokenId";
 import { createContext, type ReactNode, useContext } from "react";
 import { getContract, type ThirdwebContract } from "thirdweb";
 import { getContractMetadata } from "thirdweb/extensions/common";
@@ -21,6 +17,9 @@ import {
   getAllValidListings,
 } from "thirdweb/extensions/marketplace";
 import { useReadContract } from "thirdweb/react";
+
+// Import your global styles here
+import "../../app/styles/global.css";
 
 export type NftType = "ERC1155" | "ERC721";
 
@@ -81,11 +80,6 @@ export default function MarketplaceProvider({
       item.address.toLowerCase() === contractAddress.toLowerCase() &&
       item.chain.id === _chainId
   );
-  // You can remove this condition if you want to supported _any_ nft collection
-  // or you can update the entries in `NFT_CONTRACTS`
-  // if (!collectionSupported) {
-  //   throw new Error("Contract not supported on this marketplace");
-  // }
 
   const contract = getContract({
     chain: marketplaceContract.chain,
@@ -190,17 +184,9 @@ export default function MarketplaceProvider({
     >
       {children}
       {isLoading && (
-        <Box
-          position="fixed"
-          bottom="10px"
-          right="10px"
-          backgroundColor="rgba(0, 0, 0, 0.7)"
-          padding="10px"
-          borderRadius="md"
-          zIndex={1000}
-        >
-          <Spinner size="lg" color="purple" />
-        </Box>
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+        </div>
       )}
     </MarketplaceContext.Provider>
   );

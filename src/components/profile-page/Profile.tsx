@@ -1,6 +1,6 @@
 import { blo } from "blo";
 import { shortenAddress } from "thirdweb/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NFT_CONTRACTS, type NftContract } from "@/consts/nft_contracts";
 import {
   MediaRenderer,
@@ -25,17 +25,37 @@ type Props = {
 
 export function ProfileSection(props: Props) {
   const { address } = props;
+  
+  // Log props and ensure address is correct
+  console.log('ProfileSection Address:', address);
+
   const account = useActiveAccount();
   const isYou = address.toLowerCase() === account?.address.toLowerCase();
+  
+  // Debug active account
+  console.log('Active account:', account);
+
   const { data: ensName } = useGetENSName({ address });
   const { data: ensAvatar } = useGetENSAvatar({ ensName });
+
+  // Log ENS data
+  console.log('ENS Name:', ensName);
+  console.log('ENS Avatar:', ensAvatar);
+
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [selectedCollection, setSelectedCollection] = useState<NftContract>(
-    NFT_CONTRACTS[0]
+    NFT_CONTRACTS.length > 0 ? NFT_CONTRACTS[0] : null // Check if the array is populated
   );
+
+  useEffect(() => {
+    if (!selectedCollection) {
+      console.error('No selected collection available');
+    }
+  }, [selectedCollection]);
+
   const contract = getContract({
-    address: selectedCollection.address,
-    chain: selectedCollection.chain,
+    address: selectedCollection?.address,
+    chain: selectedCollection?.chain,
     client,
   });
 
@@ -43,7 +63,7 @@ export function ProfileSection(props: Props) {
     data,
     isLoading: isLoadingOwnedNFTs,
   } = useReadContract(
-    selectedCollection.type === "ERC1155" ? getOwnedERC1155s : getOwnedERC721s,
+    selectedCollection?.type === "ERC1155" ? getOwnedERC1155s : getOwnedERC721s,
     {
       contract,
       owner: address,
@@ -54,26 +74,36 @@ export function ProfileSection(props: Props) {
     }
   );
 
-  const chain = contract.chain;
+  // Debug data from contracts
+  console.log('Owned NFTs Data:', data);
+  
+  const chain = contract?.chain;
   const marketplaceContractAddress = MARKETPLACE_CONTRACTS.find(
-    (o) => o.chain.id === chain.id
+    (o) => o.chain.id === chain?.id
   )?.address;
-  if (!marketplaceContractAddress) throw Error("No marketplace contract found");
+
+  if (!marketplaceContractAddress) {
+    console.error("No marketplace contract found");
+    return null; // Avoid breaking the app
+  }
+
   const marketplaceContract = getContract({
     address: marketplaceContractAddress,
     chain,
     client,
   });
+
   const { data: allValidListings, isLoading: isLoadingValidListings } =
     useReadContract(getAllValidListings, {
       contract: marketplaceContract,
       queryOptions: { enabled: data && data.length > 0 },
     });
+
   const listings = allValidListings?.length
     ? allValidListings.filter(
         (item) =>
           item.assetContractAddress.toLowerCase() ===
-            contract.address.toLowerCase() &&
+            contract?.address.toLowerCase() &&
           item.creatorAddress.toLowerCase() === address.toLowerCase()
       )
     : [];
@@ -117,7 +147,7 @@ export function ProfileSection(props: Props) {
                 </button>
               </div>
               <Link
-                href={`/collection/${selectedCollection.chain.id}/${selectedCollection.address}`}
+                href={`/collection/${selectedCollection?.chain.id}/${selectedCollection?.address}`}
                 className="view-collection-link"
               >
                 View collection
@@ -147,7 +177,7 @@ export function ProfileSection(props: Props) {
                   listings?.map((item) => (
                     <div className="nft-card" key={item.id}>
                       <Link
-                        href={`/collection/${contract.chain.id}/${contract.address}/token/${item.asset.id.toString()}`}
+                        href={`/collection/${contract?.chain.id}/${contract?.address}/token/${item.asset.id.toString()}`}
                         className="nft-link"
                       >
                         <div className="nft-card-content">

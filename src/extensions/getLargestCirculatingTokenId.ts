@@ -26,7 +26,7 @@ export async function getSupplyInfo(
   if (_is1155) {
     const { nextTokenIdToMint } = await import("thirdweb/extensions/erc1155");
     const data: SupplyInfo = {
-      startTokenId: 0n,
+      startTokenId: BigInt(0),
       endTokenId: await nextTokenIdToMint(options),
     };
     return data;

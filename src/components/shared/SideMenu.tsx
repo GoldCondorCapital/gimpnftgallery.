@@ -1,6 +1,6 @@
 "use client";
 
-import { client } from "@/consts/client";
+import { createThirdwebClient } from "thirdweb"; // Import the createThirdwebClient function
 import { useGetENSAvatar } from "@/hooks/useGetENSAvatar";
 import { useGetENSName } from "@/hooks/useGetENSName";
 import { useState, useRef } from "react";
@@ -10,14 +10,25 @@ import { IoSunny } from "react-icons/io5";
 import { ConnectButton, useActiveAccount, useActiveWallet, useDisconnect } from "thirdweb/react";
 import "../styles/global.css"; // Import global styles
 
+// Create a ThirdwebClient instance
+const client = createThirdwebClient({
+  clientId: "<your_client_id>", // Replace this with your actual client ID
+});
+
 export function SideMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
   const { disconnect } = useDisconnect();
   const account = useActiveAccount();
   const { data: ensName } = useGetENSName({ address: account?.address });
   const { data: ensAvatar } = useGetENSAvatar({ ensName });
   const wallet = useActiveWallet();
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+    document.body.classList.toggle("dark-mode");
+  };
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -30,8 +41,8 @@ export function SideMenu() {
       {/* Sidebar Drawer */}
       <div className={`side-drawer ${isOpen ? "open" : ""}`}>
         <div className="drawer-header">
-          <button className="theme-toggle" onClick={toggleColorMode}>
-            {colorMode === "light" ? <FaRegMoon /> : <IoSunny />}
+          <button className="theme-toggle" onClick={toggleTheme}>
+            {isDarkMode ? <FaRegMoon /> : <IoSunny />}
           </button>
           <button className="close-button" onClick={toggleMenu}>
             &times; {/* Close Icon */}
@@ -39,7 +50,7 @@ export function SideMenu() {
         </div>
         <div className="drawer-body">
           <div>
-            <ConnectButton theme={colorMode} client={client} />
+            <ConnectButton theme={isDarkMode ? "dark" : "light"} client={client} />
           </div>
           {account && (
             <Link href="/profile">
