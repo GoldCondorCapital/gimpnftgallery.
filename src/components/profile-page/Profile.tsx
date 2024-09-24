@@ -9,14 +9,15 @@ import {
 } from "thirdweb/react";
 import { getContract, toEther } from "thirdweb";
 import { client } from "@/consts/client";
-import { getOwnedERC721s } from "@/extensions/getOwnedERC721s";
+import { ProfileMenu } from "../profile-page/Menu";
+import { getOwnedERC721s } from "../../extensions/getOwnedERC721s";
 import { OwnedItem } from "./OwnedItem";
 import { getAllValidListings } from "thirdweb/extensions/marketplace";
 import { MARKETPLACE_CONTRACTS } from "@/consts/marketplace_contract";
 import Link from "next/link";
-import { getOwnedERC1155s } from "@/extensions/getOwnedERC1155s";
-import { useGetENSAvatar } from "@/hooks/useGetENSAvatar";
-import { useGetENSName } from "@/hooks/useGetENSName";
+import { getOwnedERC1155s } from "../../extensions/getOwnedERC1155s";
+import { useGetENSAvatar } from "../../hooks/useGetENSAvatar";
+import { useGetENSName } from "../../hooks/useGetENSName";
 import "../styles/global.css"; // Import global CSS
 
 type Props = {
@@ -43,9 +44,10 @@ export function ProfileSection(props: Props) {
   console.log('ENS Avatar:', ensAvatar);
 
   const [tabIndex, setTabIndex] = useState<number>(0);
-  const [selectedCollection, setSelectedCollection] = useState<NftContract>(
-    NFT_CONTRACTS.length > 0 ? NFT_CONTRACTS[0] : null // Check if the array is populated
+  const [selectedCollection, setSelectedCollection] = useState<NftContract | null>(
+    NFT_CONTRACTS?.length > 0 ? NFT_CONTRACTS[0] : null
   );
+  
 
   useEffect(() => {
     if (!selectedCollection) {

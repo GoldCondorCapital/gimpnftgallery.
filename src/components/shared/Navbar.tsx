@@ -1,34 +1,48 @@
-"use client"; // Next.js directive to mark the component as client-side
+"use client";
 
-import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { ethers } from 'ethers'; // Correct import for ethers v6
 import styles from '../../app/styles/Navbar.module.css';
 
-// Define the type for ProfileButton props
-interface ProfileButtonProps {
-  isLoggedIn: boolean;
-  handleLoginLogout: () => void;
-}
-
 export function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [account, setAccount] = useState<string | null>(null);
 
-  // Simulate user login state persisting across sessions (optional)
+  // Check if MetaMask is installed and connect to it
   useEffect(() => {
-    const loggedInStatus = localStorage.getItem('isLoggedIn');
-    if (loggedInStatus === 'true') {
-      setIsLoggedIn(true);
-    }
+    const checkMetaMaskConnection = async () => {
+      if (typeof window !== 'undefined' && window.ethereum) {
+        try {
+          const provider = new ethers.BrowserProvider(window.ethereum as ethers.Eip1193Provider); // Cast to Eip1193Provider
+          const accounts = await provider.listAccounts();
+          if (accounts.length > 0) {
+            setAccount(accounts[0].address); // User is already connected
+          }
+        } catch (error) {
+          console.error("Error fetching accounts", error);
+        }
+      }
+    };
+    checkMetaMaskConnection();
   }, []);
 
-  // Toggle between login and logout
-  const handleLoginLogout = () => {
-    if (isLoggedIn) {
-      setIsLoggedIn(false);
-      localStorage.setItem('isLoggedIn', 'false'); // Clear local storage on logout
+  const handleLoginLogout = async () => {
+    if (account) {
+      setAccount(null); // Disconnect wallet
     } else {
-      setIsLoggedIn(true);
-      localStorage.setItem('isLoggedIn', 'true'); // Set local storage on login
+      if (typeof window !== 'undefined' && window.ethereum) {
+        try {
+          const provider = new ethers.BrowserProvider(window.ethereum as ethers.Eip1193Provider); // Cast to Eip1193Provider
+          await provider.send("eth_requestAccounts", []); // Prompt MetaMask to connect
+          const signer = await provider.getSigner(); // Await the promise to resolve the signer object
+          const userAccount = await signer.getAddress(); // Get the connected address
+          setAccount(userAccount); // Set account after successful connection
+        } catch (error) {
+          console.error("MetaMask connection failed", error);
+        }
+      } else {
+        alert('MetaMask is not installed. Please install it to use this feature.');
+      }
     }
   };
 
@@ -38,28 +52,24 @@ export function Navbar() {
         The Digital Art Gallery
       </Link>
       <div className={styles.profileMenu}>
-        {/* Profile Section */}
-        <ProfileButton isLoggedIn={isLoggedIn} handleLoginLogout={handleLoginLogout} />
-        {/* Toggle theme button */}
-        <button className={styles.themeButton} onClick={() => { /* Theme toggle logic here */ }}>
-          {/* Theme toggle button logic */}
-        </button>
+        <ProfileButton account={account} handleLoginLogout={handleLoginLogout} />
       </div>
     </div>
   );
 }
 
-// ProfileButton component with typed props
-function ProfileButton({ isLoggedIn, handleLoginLogout }: ProfileButtonProps) {
-  return isLoggedIn ? (
+interface ProfileButtonProps {
+  account: string | null;
+  handleLoginLogout: () => void;
+}
+
+function ProfileButton({ account, handleLoginLogout }: ProfileButtonProps) {
+  return account ? (
     <div>
-      <Link href="/profile">Profile</Link>
-      <button onClick={handleLoginLogout}>Logout</button>
+      <p>{`Connected: ${account.slice(0, 6)}...${account.slice(-4)}`}</p>
+      <button onClick={handleLoginLogout}>Disconnect</button>
     </div>
   ) : (
-    <div>
-      <Link href="/login">Login</Link>
-      <button onClick={handleLoginLogout}>Login</button>
-    </div>
+    <button onClick={handleLoginLogout}>Connect Wallet</button>
   );
 }

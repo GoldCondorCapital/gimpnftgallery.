@@ -1,8 +1,8 @@
 "use client";
 
 import { createThirdwebClient } from "thirdweb"; // Import the createThirdwebClient function
-import { useGetENSAvatar } from "@/hooks/useGetENSAvatar";
-import { useGetENSName } from "@/hooks/useGetENSName";
+import { useGetENSAvatar } from "../../hooks/useGetENSAvatar";
+import { useGetENSName } from "../../hooks/useGetENSName";
 import { useState, useRef } from "react";
 import Link from "next/link";
 import { FaRegMoon } from "react-icons/fa";
