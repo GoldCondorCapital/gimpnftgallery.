@@ -1,6 +1,6 @@
 //layout.tsx
 
-import "../../styles/global.css"; // Ensure the path is correct for your file structure
+import "styles/global.css"; // Ensure the path is correct for your file structure
 
 export default function TokenPage({ children }: { children: React.ReactNode }) {
   return (

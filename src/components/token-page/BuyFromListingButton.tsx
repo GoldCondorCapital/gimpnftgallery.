@@ -1,6 +1,5 @@
 import { client } from "@/consts/client";
-import { useMarketplaceContext } from "@/hooks/useMarketplaceContext";
-import { Button, useToast } from "@chakra-ui/react";
+import { useMarketplaceContext } from "hooks/useMarketplaceContext";
 import {
 	type Hex,
 	NATIVE_TOKEN_ADDRESS,
@@ -32,14 +31,21 @@ export default function BuyFromListingButton(props: Props) {
 		useMarketplaceContext();
 	const switchChain = useSwitchActiveWalletChain();
 	const activeChain = useActiveWalletChain();
-	const toast = useToast();
+
+	const notify = (message: string, type: "success" | "error") => {
+		// Simple browser notification logic; can be replaced with any notification service
+		alert(`${type.toUpperCase()}: ${message}`);
+		console.log(`[${type}] ${message}`);
+	};
+
 	return (
-		<Button
+		<button
 			onClick={async () => {
 				if (activeChain?.id !== nftContract.chain.id) {
 					await switchChain(nftContract.chain);
 				}
 				try {
+					// Check if the listing's currency is not the native token
 					if (
 						listing.currencyContractAddress.toLowerCase() !==
 						NATIVE_TOKEN_ADDRESS.toLowerCase()
@@ -68,6 +74,7 @@ export default function BuyFromListingButton(props: Props) {
 						}
 					}
 
+					// Proceed with buying the NFT
 					const transaction = buyFromListing({
 						contract: marketplaceContract,
 						listingId: listing.id,
@@ -75,38 +82,38 @@ export default function BuyFromListingButton(props: Props) {
 						recipient: account.address,
 					});
 					console.log(transaction);
+
 					const receipt = await sendTransaction({
 						transaction,
 						account,
 					});
+
 					await waitForReceipt({
 						transactionHash: receipt.transactionHash,
 						client,
 						chain: nftContract.chain,
 					});
-					toast({
-						title:
-							"Purchase completed! The asset(s) should arrive in your account shortly",
-						status: "success",
-						duration: 4000,
-						isClosable: true,
-					});
+
+					notify(
+						"Purchase completed! The asset(s) should arrive in your account shortly",
+						"success"
+					);
+
 					refetchAllListings();
 				} catch (err) {
 					console.error(err);
 					if ((err as Error).message.startsWith("insufficient funds for gas")) {
-						toast({
-							title: "You don't have enough funds for this purchase.",
-							description: `Make sure you have enough gas for the transaction + ${listing.currencyValuePerToken.displayValue} ${listing.currencyValuePerToken.symbol}`,
-							status: "error",
-							isClosable: true,
-							duration: 7000,
-						});
+						notify(
+							`You don't have enough funds for this purchase. Make sure you have enough gas for the transaction + ${listing.currencyValuePerToken.displayValue} ${listing.currencyValuePerToken.symbol}`,
+							"error"
+						);
+					} else {
+						notify("An error occurred during the transaction.", "error");
 					}
 				}
 			}}
 		>
 			Buy
-		</Button>
+		</button>
 	);
 }

@@ -20,11 +20,11 @@ export type NftContract = {
  */
 export const NFT_CONTRACTS: NftContract[] = [
   {
-    address: "0xF09334a9027b263096b772b0F46D271E90b53F3E",
+    address: "0x142bB2aDF4782aEEd93EBFD641acb9B3037779D1",
     chain: bsc,
     title: "",
     thumbnailUrl:
-      "https://d391b93f5f62d9c15f67142e43841acc.ipfscdn.io/ipfs/QmNgLCDjfeKYEPnds2Ti3o7PJiupztadsFSVXZ8f35Jc7S/16.png",
+      "https://d391b93f5f62d9c15f67142e43841acc.ipfscdn.io/ipfs/bafybeidpjcxupgvd6n6n3ehbsghay5ycpqtp7ukhbvbmmyeho2zoyle53q/",
     type: "ERC721",
   },
 ];

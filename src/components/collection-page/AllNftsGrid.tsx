@@ -9,7 +9,7 @@ import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
 import { getNFTs as getNFTs1155 } from "thirdweb/extensions/erc1155";
 import { getNFTs as getNFTs721 } from "thirdweb/extensions/erc721";
 import { MediaRenderer, useReadContract } from "thirdweb/react";
-import "../app/styles//global.css";
+import "../../styles//global.css";
 
 export function AllNftsGrid() {
   const [itemsPerPage, setItemsPerPage] = useState<number>(20);

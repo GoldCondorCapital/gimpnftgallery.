@@ -3,7 +3,7 @@ import { useMarketplaceContext } from "../../hooks/useMarketplaceContext";
 
 import Link from "next/link";
 import { MediaRenderer } from "thirdweb/react";
-import "../styles/global.css"; // Assuming you're using a global CSS file
+import "../../styles//global.css"; // Assuming you're using a global CSS file
 
 export function ListingGrid() {
   const { listingsInSelectedCollection, nftContract } = useMarketplaceContext();

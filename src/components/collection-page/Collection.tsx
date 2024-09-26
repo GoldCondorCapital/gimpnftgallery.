@@ -30,16 +30,21 @@ export function Collection() {
     }
   );
 
+  // Fallback Image
+  const fallbackImage = "/Digital_Gallery_Images/Designer.png";
+
   const thumbnailImage =
-    contractMetadata?.image || firstNFT?.metadata.image || "";
+    contractMetadata?.image || firstNFT?.metadata.image || fallbackImage;
 
   return (
     <>
       <div className="container">
         <div className="media-wrapper">
+          {/* Fallback to default image if image fails to load */}
           <MediaRenderer
             client={client}
             src={thumbnailImage}
+            onError={(e) => (e.currentTarget.src = fallbackImage)}
             style={{
               marginLeft: "auto",
               marginRight: "auto",
@@ -52,9 +57,7 @@ export function Collection() {
             {contractMetadata?.name || "Unknown collection"}
           </h1>
           {contractMetadata?.description && (
-            <p className="description">
-              {contractMetadata.description}
-            </p>
+            <p className="description">{contractMetadata.description}</p>
           )}
 
           <div className="tabs">

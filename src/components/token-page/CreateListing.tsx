@@ -1,19 +1,5 @@
 import { NATIVE_TOKEN_ICON_MAP, Token } from "@/consts/supported_tokens";
-import { useMarketplaceContext } from "@/hooks/useMarketplaceContext";
-import { CheckIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import {
-  Button,
-  Flex,
-  Input,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Text,
-  Image,
-  useToast,
-  Box,
-} from "@chakra-ui/react";
+import { useMarketplaceContext } from "hooks/useMarketplaceContext";
 import { useRef, useState } from "react";
 import { NATIVE_TOKEN_ADDRESS, sendAndConfirmTransaction } from "thirdweb";
 import {
@@ -42,8 +28,7 @@ export function CreateListing(props: Props) {
   const { tokenId, account } = props;
   const switchChain = useSwitchActiveWalletChain();
   const activeChain = useActiveWalletChain();
-  const [currency, setCurrency] = useState<Token>();
-  const toast = useToast();
+  const [currency, setCurrency] = useState<Token | undefined>(undefined);
 
   const {
     nftContract,
@@ -62,106 +47,78 @@ export function CreateListing(props: Props) {
 
   const options: Token[] = [nativeToken].concat(supportedTokens);
 
+  // Notify user with an alert (replace with any notification system you prefer)
+  const notify = (message: string, type: "success" | "error") => {
+    alert(`${type.toUpperCase()}: ${message}`);
+  };
+
   return (
-    <>
+    <div>
       <br />
-      <Flex direction="column" w={{ base: "90vw", lg: "430px" }} gap="10px">
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
         {type === "ERC1155" ? (
-          <>
-            <Flex
-              direction="row"
-              flexWrap="wrap"
-              justifyContent="space-between"
-            >
-              <Box>
-                <Text>Price</Text>
-                <Input
-                  type="number"
-                  ref={priceRef}
-                  placeholder="Enter a price"
-                />
-              </Box>
-              <Box>
-                <Text>Quantity</Text>
-                <Input
-                  type="number"
-                  ref={qtyRef}
-                  defaultValue={1}
-                  placeholder="Quantity to sell"
-                />
-              </Box>
-            </Flex>
-          </>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div>
+              <label htmlFor="price">Price</label>
+              <input
+                id="price"
+                type="number"
+                ref={priceRef}
+                placeholder="Enter a price"
+              />
+            </div>
+            <div>
+              <label htmlFor="quantity">Quantity</label>
+              <input
+                id="quantity"
+                type="number"
+                ref={qtyRef}
+                defaultValue={1}
+                placeholder="Quantity to sell"
+              />
+            </div>
+          </div>
         ) : (
-          <>
-            <Text>Price</Text>
-            <Input
+          <div>
+            <label htmlFor="price">Price</label>
+            <input
+              id="price"
               type="number"
               ref={priceRef}
               placeholder="Enter a price for your listing"
             />
-          </>
+          </div>
         )}
-        <Menu>
-          <MenuButton minH="48px" as={Button} rightIcon={<ChevronDownIcon />}>
-            {currency ? (
-              <Flex direction="row">
-                <Image
-                  boxSize="2rem"
-                  borderRadius="full"
-                  src={currency.icon}
-                  mr="12px"
-                />
-                <Text my="auto">{currency.symbol}</Text>
-              </Flex>
-            ) : (
-              "Select currency"
-            )}
-          </MenuButton>
-          <MenuList>
+
+        <div>
+          <label htmlFor="currency">Select currency</label>
+          <select
+            id="currency"
+            value={currency?.tokenAddress}
+            onChange={(e) => {
+              const selectedToken = options.find(
+                (token) => token.tokenAddress === e.target.value
+              );
+              setCurrency(selectedToken);
+            }}
+          >
+            <option value="">Select currency</option>
             {options.map((token) => (
-              <MenuItem
-                minH="48px"
-                key={token.tokenAddress}
-                onClick={() => setCurrency(token)}
-                display={"flex"}
-                flexDir={"row"}
-              >
-                <Image
-                  boxSize="2rem"
-                  borderRadius="full"
-                  src={token.icon}
-                  ml="2px"
-                  mr="14px"
-                />
-                <Text my="auto">{token.symbol}</Text>
-                {token.tokenAddress.toLowerCase() ===
-                  currency?.tokenAddress.toLowerCase() && (
-                  <CheckIcon ml="auto" />
-                )}
-              </MenuItem>
+              <option key={token.tokenAddress} value={token.tokenAddress}>
+                {token.symbol}
+              </option>
             ))}
-          </MenuList>
-        </Menu>
-        <Button
-          isDisabled={!currency}
+          </select>
+        </div>
+
+        <button
           onClick={async () => {
             const value = priceRef.current?.value;
             if (!value) {
-              return toast({
-                title: "Please enter a price for this listing",
-                status: "error",
-                isClosable: true,
-                duration: 5000,
-              });
+              return notify("Please enter a price for this listing", "error");
             }
             if (!currency) {
-              return toast({
-                title: `Please select a currency for the listing`,
-                status: "error",
-                isClosable: true,
-                duration: 5000,
-              });
+              return notify("Please select a currency for the listing", "error");
             }
             if (activeChain?.id !== nftContract.chain.id) {
               await switchChain(nftContract.chain);
@@ -169,13 +126,7 @@ export function CreateListing(props: Props) {
             const _qty = BigInt(qtyRef.current?.value ?? 1);
             if (type === "ERC1155") {
               if (!_qty || _qty <= 0n) {
-                return toast({
-                  title: "Error",
-                  description: "Invalid quantity",
-                  status: "error",
-                  isClosable: true,
-                  duration: 5000,
-                });
+                return notify("Invalid quantity", "error");
               }
             }
 
@@ -221,11 +172,12 @@ export function CreateListing(props: Props) {
               account,
             });
             refetchAllListings();
+            notify("Listing created successfully", "success");
           }}
         >
           List
-        </Button>
-      </Flex>
-    </>
+        </button>
+      </div>
+    </div>
   );
 }

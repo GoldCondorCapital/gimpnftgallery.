@@ -15,6 +15,7 @@
     "autoprefixer": "^10.4.20",
     "blo": "^1.2.0",
     "ethers": "^6.13.2",
+    "jdenticon": "^3.3.0",
     "next": "^14.2.4",
     "pino-pretty": "^11.2.1",
     "postcss-preset-env": "^10.0.3",

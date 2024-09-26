@@ -27,12 +27,12 @@ export const SUPPORTED_TOKENS: SupportedTokens[] = [
       {
         tokenAddress: "0x092aC429b9c3450c9909433eB0662c3b7c13cF9A",
         symbol: "GCC",
-        icon: "/erc20-icons/usdc.png",
+        icon: "/erc20-icons/GCC.png",
       },
       {
-        tokenAddress: "0x82dcec6aa3c8bfe2c96d40d8805ee0da15708643",
-        symbol: "USDT",
-        icon: "/erc20-icons/usdt.png",
+        tokenAddress: "0xB8c77482e45F1F44dE1745F52C74426C631bDD52",
+        symbol: "BNB",
+        icon: "/erc20-icons/bnb.jpg",
       },
       // Add more ERC20 here...
     ],

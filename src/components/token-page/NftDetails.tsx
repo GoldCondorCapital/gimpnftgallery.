@@ -1,8 +1,8 @@
-import { useMarketplaceContext } from "@/hooks/useMarketplaceContext";
+import { useMarketplaceContext } from "hooks/useMarketplaceContext";
 import { shortenAddress } from "thirdweb/utils";
 import Link from "next/link";
 import { useState } from "react";
-import "../styles/global.css"; // Import global styles
+import "../../styles/global.css"; // Import global styles
 
 type Props = {
   nft: NFT;

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ethers } from 'ethers'; // Correct import for ethers v6
-import styles from '../../app/styles/Navbar.module.css';
+import styles from '../../styles/Navbar.module.css'; // Correct relative path
 
 export function Navbar() {
   const [account, setAccount] = useState<string | null>(null);
@@ -14,10 +14,9 @@ export function Navbar() {
       if (typeof window !== 'undefined' && window.ethereum) {
         try {
           const provider = new ethers.BrowserProvider(window.ethereum as ethers.Eip1193Provider); // Cast to Eip1193Provider
-          const accounts = await provider.listAccounts();
-          if (accounts.length > 0) {
-            setAccount(accounts[0].address); // User is already connected
-          }
+          const signer = await provider.getSigner(); // Get the signer
+          const address = await signer.getAddress(); // Extract address
+          setAccount(address); // Set the address in the account state
         } catch (error) {
           console.error("Error fetching accounts", error);
         }
@@ -25,6 +24,7 @@ export function Navbar() {
     };
     checkMetaMaskConnection();
   }, []);
+  
 
   const handleLoginLogout = async () => {
     if (account) {
@@ -49,7 +49,7 @@ export function Navbar() {
   return (
     <div className={styles.navbar}>
       <Link href="/" className={styles.logo}>
-        The Digital Art Gallery
+        Back to Start 
       </Link>
       <div className={styles.profileMenu}>
         <ProfileButton account={account} handleLoginLogout={handleLoginLogout} />

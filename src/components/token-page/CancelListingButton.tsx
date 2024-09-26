@@ -1,5 +1,4 @@
-import { useMarketplaceContext } from "@/hooks/useMarketplaceContext";
-import { Button, useToast } from "@chakra-ui/react";
+import { useMarketplaceContext } from "hooks/useMarketplaceContext";
 import { sendAndConfirmTransaction } from "thirdweb";
 import { cancelListing } from "thirdweb/extensions/marketplace";
 import {
@@ -19,32 +18,46 @@ export default function CancelListingButton(props: Props) {
   const switchChain = useSwitchActiveWalletChain();
   const activeChain = useActiveWalletChain();
   const { account, listingId } = props;
-  const toast = useToast();
+
+  const notify = (message: string, type: "success" | "error") => {
+    // Simple browser notification logic; replace with any notification service
+    alert(`${type.toUpperCase()}: ${message}`);
+    console.log(`[${type}] ${message}`);
+  };
 
   return (
-    <Button
+    <button
       onClick={async () => {
-        if (activeChain?.id !== nftContract.chain.id) {
-          await switchChain(nftContract.chain);
+        try {
+          // Ensure the wallet is on the correct chain
+          if (activeChain?.id !== nftContract.chain.id) {
+            await switchChain(nftContract.chain);
+          }
+
+          // Cancel the listing
+          const transaction = cancelListing({
+            contract: marketplaceContract,
+            listingId,
+          });
+
+          // Send and confirm the transaction
+          await sendAndConfirmTransaction({
+            transaction,
+            account,
+          });
+
+          // Notify the user of success
+          notify("Listing cancelled successfully", "success");
+
+          // Refetch the listings after cancellation
+          refetchAllListings();
+        } catch (error) {
+          console.error(error);
+          notify("An error occurred while cancelling the listing", "error");
         }
-        const transaction = cancelListing({
-          contract: marketplaceContract,
-          listingId,
-        });
-        await sendAndConfirmTransaction({
-          transaction,
-          account,
-        });
-        toast({
-          title: "Listing cancelled successfully",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-        refetchAllListings();
       }}
     >
       Cancel
-    </Button>
+    </button>
   );
 }

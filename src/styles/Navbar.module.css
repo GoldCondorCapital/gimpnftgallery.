@@ -1,0 +1,36 @@
+/* Navbar.module.css */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 180px 600px;
+  background-color: var(--background); /* Use global variable */
+  color: var(--text-color); /* Use global variable */
+  
+  /* Add the background image for the navbar */
+  background-image: url('/Digital_Gallery_Images/IMG_3403.PNG'); /* Adjust the path as needed */
+  background-size: cover; /* Ensures the image covers the entire navbar */
+  background-position: center; /* Center the background image */
+  background-repeat: no-repeat; /* Prevent image repeat */
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--link-color); /* Use global variable */
+  text-decoration: none;
+}
+
+.profileMenu {
+  display: flex;
+  gap: 20px;
+}
+
+.themeButton {
+  background-color: var(--button-bg); /* Use global variable */
+  color: var(--button-text); /* Use global variable */
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}

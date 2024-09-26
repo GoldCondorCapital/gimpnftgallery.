@@ -1,12 +1,8 @@
-import { blo } from "blo";
-import { shortenAddress } from "thirdweb/utils";
 import { useState, useEffect } from "react";
+import jdenticon from "jdenticon";
+import { shortenAddress } from "thirdweb/utils"; // Make sure this is installed
 import { NFT_CONTRACTS, type NftContract } from "@/consts/nft_contracts";
-import {
-  MediaRenderer,
-  useActiveAccount,
-  useReadContract,
-} from "thirdweb/react";
+import { MediaRenderer, useActiveAccount, useReadContract } from "thirdweb/react";
 import { getContract, toEther } from "thirdweb";
 import { client } from "@/consts/client";
 import { ProfileMenu } from "../profile-page/Menu";
@@ -18,75 +14,70 @@ import Link from "next/link";
 import { getOwnedERC1155s } from "../../extensions/getOwnedERC1155s";
 import { useGetENSAvatar } from "../../hooks/useGetENSAvatar";
 import { useGetENSName } from "../../hooks/useGetENSName";
-import "../styles/global.css"; // Import global CSS
+import "../../styles/global.css";
 
 type Props = {
   address: string;
 };
 
+// Function to generate an avatar using jdenticon based on the wallet address
+function generateAvatar(address: string) {
+  const size = 100; // Size of the avatar
+  return `data:image/svg+xml;utf8,${encodeURIComponent(
+    jdenticon.toSvg(address, size)
+  )}`;
+}
+
 export function ProfileSection(props: Props) {
   const { address } = props;
-  
-  // Log props and ensure address is correct
-  console.log('ProfileSection Address:', address);
 
   const account = useActiveAccount();
   const isYou = address.toLowerCase() === account?.address.toLowerCase();
-  
-  // Debug active account
-  console.log('Active account:', account);
 
   const { data: ensName } = useGetENSName({ address });
   const { data: ensAvatar } = useGetENSAvatar({ ensName });
 
-  // Log ENS data
-  console.log('ENS Name:', ensName);
-  console.log('ENS Avatar:', ensAvatar);
-
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [selectedCollection, setSelectedCollection] = useState<NftContract | null>(
-    NFT_CONTRACTS?.length > 0 ? NFT_CONTRACTS[0] : null
+    NFT_CONTRACTS.length > 0 ? NFT_CONTRACTS[0] : null
   );
-  
 
   useEffect(() => {
     if (!selectedCollection) {
-      console.error('No selected collection available');
+      console.error("No selected collection available");
     }
   }, [selectedCollection]);
 
-  const contract = getContract({
-    address: selectedCollection?.address,
-    chain: selectedCollection?.chain,
-    client,
-  });
+  const defaultChain = { rpc: "https://default-rpc-url.com", id: 1 }; // Replace with your default chain
 
-  const {
-    data,
-    isLoading: isLoadingOwnedNFTs,
-  } = useReadContract(
+  const contract = selectedCollection
+    ? getContract({
+        address: selectedCollection?.address ?? "", // Ensure address is not undefined
+        chain: selectedCollection?.chain ?? defaultChain, // Provide a fallback chain if it's undefined
+        client,
+      })
+    : null;
+
+  const { data, isLoading: isLoadingOwnedNFTs } = useReadContract(
     selectedCollection?.type === "ERC1155" ? getOwnedERC1155s : getOwnedERC721s,
     {
       contract,
       owner: address,
       requestPerSec: 50,
       queryOptions: {
-        enabled: !!address,
+        enabled: !!address && !!contract,
       },
     }
   );
 
-  // Debug data from contracts
-  console.log('Owned NFTs Data:', data);
-  
   const chain = contract?.chain;
-  const marketplaceContractAddress = MARKETPLACE_CONTRACTS.find(
-    (o) => o.chain.id === chain?.id
-  )?.address;
+  const marketplaceContractAddress = chain
+    ? MARKETPLACE_CONTRACTS.find((o) => o.chain.id === chain.id)?.address
+    : null;
 
   if (!marketplaceContractAddress) {
     console.error("No marketplace contract found");
-    return null; // Avoid breaking the app
+    return null; // Prevent further rendering if marketplace contract is missing
   }
 
   const marketplaceContract = getContract({
@@ -98,14 +89,13 @@ export function ProfileSection(props: Props) {
   const { data: allValidListings, isLoading: isLoadingValidListings } =
     useReadContract(getAllValidListings, {
       contract: marketplaceContract,
-      queryOptions: { enabled: data && data.length > 0 },
+      queryOptions: { enabled: !!data && data.length > 0 },
     });
 
   const listings = allValidListings?.length
     ? allValidListings.filter(
         (item) =>
-          item.assetContractAddress.toLowerCase() ===
-            contract?.address.toLowerCase() &&
+          item.assetContractAddress.toLowerCase() === contract?.address.toLowerCase() &&
           item.creatorAddress.toLowerCase() === address.toLowerCase()
       )
     : [];
@@ -114,7 +104,7 @@ export function ProfileSection(props: Props) {
     <div className="profile-section-container">
       <div className="profile-header">
         <img
-          src={ensAvatar ?? blo(address as `0x${string}`)}
+          src={ensAvatar ?? generateAvatar(address as `0x${string}`)} // Replaced blo with generateAvatar
           alt="Profile Avatar"
           className="profile-avatar"
         />
@@ -127,7 +117,7 @@ export function ProfileSection(props: Props) {
       <div className="profile-content">
         <ProfileMenu
           selectedCollection={selectedCollection}
-          setSelectedCollection={setSelectedCollection}
+          setSelectedCollection={setSelectedCollection} // Allow setSelectedCollection to accept null
         />
         {isLoadingOwnedNFTs ? (
           <div className="loading">Loading...</div>
@@ -174,31 +164,29 @@ export function ProfileSection(props: Props) {
                     </p>
                   </div>
                 )
-              ) : (
-                listings && listings.length > 0 ? (
-                  listings?.map((item) => (
-                    <div className="nft-card" key={item.id}>
-                      <Link
-                        href={`/collection/${contract?.chain.id}/${contract?.address}/token/${item.asset.id.toString()}`}
-                        className="nft-link"
-                      >
-                        <div className="nft-card-content">
-                          <MediaRenderer
-                            client={client}
-                            src={item.asset.metadata.image}
-                          />
-                          <p>{item.asset?.metadata?.name ?? "Unknown item"}</p>
-                          <p>Price</p>
-                          <p>{toEther(item.pricePerToken)} {item.currencyValuePerToken.symbol}</p>
-                        </div>
-                      </Link>
-                    </div>
-                ))
-                ) : (
-                  <div>
-                    You do not have any listing with this collection
+              ) : listings && listings.length > 0 ? (
+                listings?.map((item) => (
+                  <div className="nft-card" key={item.id}>
+                    <Link
+                      href={`/collection/${contract?.chain.id}/${contract?.address}/token/${item.asset.id.toString()}`}
+                      className="nft-link"
+                    >
+                      <div className="nft-card-content">
+                        <MediaRenderer
+                          client={client}
+                          src={item.asset.metadata.image}
+                        />
+                        <p>{item.asset?.metadata?.name ?? "Unknown item"}</p>
+                        <p>Price</p>
+                        <p>{toEther(item.pricePerToken)} {item.currencyValuePerToken.symbol}</p>
+                      </div>
+                    </Link>
                   </div>
-                )
+                ))
+              ) : (
+                <div>
+                  You do not have any listing with this collection
+                </div>
               )}
             </div>
           </>

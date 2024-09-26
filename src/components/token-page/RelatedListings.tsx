@@ -1,10 +1,10 @@
 import { client } from "@/consts/client";
-import { useMarketplaceContext } from "@/hooks/useMarketplaceContext";
+import { useMarketplaceContext } from "hooks/useMarketplaceContext";
 import { toEther } from "thirdweb";
 import { MediaRenderer } from "thirdweb/react";
 import Link from "next/link";
 import { useState } from "react";
-import "../styles/global.css"; // Import global styles
+import "../../styles/global.css"; // Import global styles
 
 export default function RelatedListings({
   excludedListingId,
