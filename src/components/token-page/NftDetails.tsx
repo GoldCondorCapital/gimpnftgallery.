@@ -13,12 +13,13 @@ export function NftDetails(props: Props) {
   const { nft } = props;
   const [isOpen, setIsOpen] = useState(false); // State for accordion toggle
 
+  // Construct URLs for the contract and token details
   const contractUrl = `${
     nftContract.chain.blockExplorers
       ? nftContract.chain.blockExplorers[0]?.url
       : ""
   }/address/${nftContract.address}`;
-  
+
   const tokenUrl = `${
     nftContract.chain.blockExplorers
       ? nftContract.chain.blockExplorers[0]?.url
@@ -35,28 +36,28 @@ export function NftDetails(props: Props) {
       </button>
 
       {isOpen && (
-        <div className="accordion-panel">
+        <div className="accordion-content">
           <div className="detail-row">
-            <span>Contract address</span>
+            <span className="detail-title">Contract Address:</span>
             <Link href={contractUrl} target="_blank" className="link">
               {shortenAddress(nftContract.address)}
             </Link>
           </div>
 
           <div className="detail-row">
-            <span>Token ID</span>
+            <span className="detail-title">Token ID:</span>
             <Link href={tokenUrl} target="_blank" className="link">
               {nft?.id.toString()}
             </Link>
           </div>
 
           <div className="detail-row">
-            <span>Token Standard</span>
+            <span className="detail-title">Token Standard:</span>
             <span>{type}</span>
           </div>
 
           <div className="detail-row">
-            <span>Chain</span>
+            <span className="detail-title">Chain:</span>
             <span>{nftContract.chain.name ?? "Unnamed chain"}</span>
           </div>
         </div>

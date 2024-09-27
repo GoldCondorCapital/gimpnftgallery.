@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import jdenticon from "jdenticon";
-import { shortenAddress } from "thirdweb/utils"; // Make sure this is installed
+import { shortenAddress } from "thirdweb/utils"; // Ensure thirdweb is installed
 import { NFT_CONTRACTS, type NftContract } from "@/consts/nft_contracts";
 import { MediaRenderer, useActiveAccount, useReadContract } from "thirdweb/react";
 import { getContract, toEther } from "thirdweb";
@@ -23,6 +23,13 @@ type Props = {
 // Function to generate an avatar using jdenticon based on the wallet address
 function generateAvatar(address: string) {
   const size = 100; // Size of the avatar
+
+  // Check if jdenticon is properly imported and defined
+  if (!jdenticon || !jdenticon.toSvg) {
+    console.error("jdenticon is not available");
+    return ""; // Return an empty string or a placeholder image if jdenticon is not defined
+  }
+
   return `data:image/svg+xml;utf8,${encodeURIComponent(
     jdenticon.toSvg(address, size)
   )}`;
@@ -48,7 +55,7 @@ export function ProfileSection(props: Props) {
     }
   }, [selectedCollection]);
 
-  const defaultChain = { rpc: "https://default-rpc-url.com", id: 1 }; // Replace with your default chain
+  const defaultChain = { rpc: "https://default-rpc-url.com", id: 1 }; // Replace with your default chain configuration
 
   const contract = selectedCollection
     ? getContract({
@@ -104,7 +111,7 @@ export function ProfileSection(props: Props) {
     <div className="profile-section-container">
       <div className="profile-header">
         <img
-          src={ensAvatar ?? generateAvatar(address as `0x${string}`)} // Replaced blo with generateAvatar
+          src={ensAvatar ?? generateAvatar(address)} // Updated avatar generation
           alt="Profile Avatar"
           className="profile-avatar"
         />

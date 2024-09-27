@@ -1,12 +1,14 @@
-/* Global theme colors and reset styles */
-:root {
-  --background: #e4cccc; /* Light background by default */
-  --text-color: #130808;
-  --link-color: #c8d1e4;
-  --link-hover-color: #dae1e9; /* Hover state for links */
-  --button-bg: #171c24;
-  --button-hover-bg: #333; /* Hover state for buttons */
-  --button-text: #fff;
+/*******************************************************
+ * Global Theme Variables
+ *******************************************************/
+ :root {
+  --background: #3fafbe; /* Light theme background */
+  --text-color: #130808; /* Main text color */
+  --link-color: #c8d1e4; /* Link color */
+  --link-hover-color: #dae1e9; /* Link hover color */
+  --button-bg: #171c24; /* Button background */
+  --button-hover-bg: #333; /* Button hover background */
+  --button-text: #fff; /* Button text color */
   --font-size-base: 16px; /* Base font size */
   --font-size-heading: 2rem; /* Heading font size */
   --font-size-small: 0.875rem; /* Small font size */
@@ -16,13 +18,15 @@ body.dark-mode {
   --background: #1a202c;
   --text-color: #ffffff;
   --link-color: #ffffff;
-  --link-hover-color: #dddddd; /* Hover state in dark mode */
+  --link-hover-color: #dddddd; /* Dark mode link hover */
   --button-bg: #ffffff;
-  --button-hover-bg: #cccccc; /* Hover state for buttons in dark mode */
+  --button-hover-bg: #cccccc; /* Dark mode button hover */
   --button-text: #1a202c;
 }
 
-/* Reset styles */
+/*******************************************************
+ * Reset and Base Styles
+ *******************************************************/
 * {
   margin: 0;
   padding: 0;
@@ -34,10 +38,21 @@ body {
   font-size: var(--font-size-base);
   background-color: var(--background);
   color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for dark mode */
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Links */
+/*******************************************************
+ * Utility Classes
+ *******************************************************/
+.text-center { text-align: center; }
+.mt-20 { margin-top: 20px; }
+.mb-20 { margin-bottom: 20px; }
+
+/*******************************************************
+ * Links and Buttons
+ *******************************************************/
 a {
   color: var(--link-color);
   text-decoration: none;
@@ -48,8 +63,7 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Buttons */
-button {
+button, .collection-button {
   background-color: var(--button-bg);
   color: var(--button-text);
   border: none;
@@ -57,188 +71,67 @@ button {
   font-size: var(--font-size-base);
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 5px; /* Common button radius */
 }
 
-button:hover {
+button:hover, .collection-button:hover {
   background-color: var(--button-hover-bg);
+  color: var(--link-hover-color); /* Change text color on hover */
 }
 
-/* Headings */
-h1, h2, h3, h4, h5, h6 {
-  color: var(--text-color);
-  margin-bottom: 1rem;
+.collection-button {
+  display: inline-block;
+  margin-left: 20px; /* Spacing for button placement */
+  text-decoration: none;
 }
 
-h1 {
-  font-size: var(--font-size-heading);
+/*******************************************************
+ * Container and Layout Styles
+ *******************************************************/
+.full-height-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-/* Utility classes */
-.text-center {
-  text-align: center;
-}
-
-.mt-20 {
-  margin-top: 20px;
-}
-
-.mb-20 {
-  margin-bottom: 20px;
-}
-
-/* Container for content */
-.container {
-  max-width: 1200px;
+.container, .frame-content {
+  max-width: 1200px; /* Universal container width */
   margin: 0 auto;
   padding: 20px;
 }
 
-.box {
-  padding: 20px;
+.box, .frame-content {
+  background: #fff;
   border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.flex-container {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.image {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.text {
-  font-size: 1rem;
-  color: #333;
-}
-
-.button {
-  padding: 10px 20px;
-  background-color: #1a202c;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.button:hover {
-  background-color: #333;
-}
-
-/* Accordion styling */
-.accordion-item {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-.accordion-header {
-  background-color: #f7f7f7;
-  padding: 15px;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.accordion-button {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.accordion-icon {
-  transition: transform 0.3s ease;
-}
-
-.accordion-icon.rotate {
-  transform: rotate(180deg);
-}
-
-.accordion-content {
-  padding: 15px;
-  display: none;
-  border-top: 1px solid #ccc;
-}
-
-.accordion-content.open {
-  display: block;
-}
-
-/* Loading styles */
-.loading-overlay {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 10px;
   border-radius: 10px;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Universal shadow */
+  margin: 20px auto; /* Center and add margin */
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid #6a1b9a;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+.frame-content {
+  width: 80%;
+  max-width: 800px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+/*******************************************************
+ * Navbar Styling (moved to separate Navbar.module.css)
+ *******************************************************/
 
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  font-size: 1.5rem;
-  color: #333;
-}
-
-/* Home component styling */
-.home-container {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.welcome-section {
+/*******************************************************
+ * Footer Styling
+ *******************************************************/
+.footer {
+  background-color: var(--button-bg);
+  color: var(--button-text);
   text-align: center;
-  margin-bottom: 40px;
+  padding: 15px;
+  margin-top: auto;
 }
 
-.heading {
-  font-size: 2.5rem;
-  color: var(--text-color);
-  margin-bottom: 10px;
-}
-
-.subheading {
-  font-size: 1.25rem;
-  color: var(--text-color);
-}
-
-.trending-heading {
-  font-size: 2rem;
-  margin-bottom: 20px;
-  color: var(--text-color);
-}
-
+/*******************************************************
+ * Card and Grid Styling
+ *******************************************************/
 .nft-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -272,18 +165,20 @@ h1 {
   color: var(--text-color);
 }
 
-/* Custom CSS for centering the background and image */
+/*******************************************************
+ * Frame Container Styling
+ *******************************************************/
 .frame-container {
   position: relative;
-  width: 350px; /* Adjust width to fit the image into the frame */
-  height: 350px; /* Adjust height to fit the image into the frame */
-  margin: 0 auto; /* Center horizontally in the parent container */
+  width: 350px;
+  height: 350px;
+  margin: 0 auto;
 }
 
 .frame-container .frame-background {
   position: absolute;
-  width: 100%; /* The frame image should cover the full container */
-  height: 100%; /* Maintain the height of the container */
+  width: 100%;
+  height: 100%;
   top: 0;
   left: 0;
   z-index: 1;
@@ -293,11 +188,120 @@ h1 {
 .frame-container .nft-image {
   position: absolute;
   z-index: 2;
-  width: 60%; /* Adjust size to fit within the frame */
-  height: 60%; /* Adjust size to fit within the frame */
-  top: 50%; /* Center vertically */
-  left: 50%; /* Center horizontally */
-  transform: translate(-50%, -50%); /* Translate image to align in the center */
-  border-radius: 8px; /* Optional: give the NFT image a slight border radius */
+  width: 60%;
+  height: 60%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
 }
 
+/*******************************************************
+ * Accordion Styling
+ *******************************************************/
+/* Accordion Styling */
+.accordion-item {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  max-width: 600px; /* Limit width to prevent stretching */
+  padding: 5px;
+}
+
+/* Accordion Button Styling */
+.accordion-button {
+  background: #aa1616;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.accordion-button:hover {
+  background-color: #9c2e2e;
+}
+
+/* Accordion Content */
+.accordion-content {
+  padding: 15px;
+  border-top: 1px solid #a19292;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Add spacing between rows */
+}
+
+/* Accordion Details Row */
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0; /* Space out rows */
+}
+
+/* Detail Title */
+.detail-title {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+/* Detail Link Styling */
+.link {
+  color: #3b82f6; /* Link color */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.link:hover {
+  color: #2563eb; /* Darker on hover */
+}
+
+
+/*******************************************************
+ * Loading Spinner
+ *******************************************************/
+.loading-overlay {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px;
+  border-radius: 10px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #6a1b9a;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/*******************************************************
+ * Mobile View Optimizations
+ *******************************************************/
+@media screen and (max-width: 768px) {
+  body {
+    background-image: url('/Digital_Gallery_Images/IMG_3403_mobile.PNG');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  .navbar {
+    background: none; /* Remove background for mobile navbar */
+  }
+}

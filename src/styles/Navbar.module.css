@@ -1,36 +1,59 @@
-/* Navbar.module.css */
+/* Navbar Styling */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 180px 600px;
-  background-color: var(--background); /* Use global variable */
-  color: var(--text-color); /* Use global variable */
-  
-  /* Add the background image for the navbar */
-  background-image: url('/Digital_Gallery_Images/IMG_3403.PNG'); /* Adjust the path as needed */
-  background-size: cover; /* Ensures the image covers the entire navbar */
-  background-position: center; /* Center the background image */
-  background-repeat: no-repeat; /* Prevent image repeat */
+  padding: 15px 20px;
+  background-image: url('/Digital_Gallery_Images/IMG_3403.PNG'); /* Default background for larger screens */
+  background-size: cover;
+  color: var(--text-color);
 }
 
 .logo {
   font-size: 24px;
   font-weight: bold;
-  color: var(--link-color); /* Use global variable */
+  color: var(--link-color);
   text-decoration: none;
 }
 
+/* Profile Menu */
 .profileMenu {
   display: flex;
   gap: 20px;
 }
 
 .themeButton {
-  background-color: var(--button-bg); /* Use global variable */
-  color: var(--button-text); /* Use global variable */
+  background-color: var(--button-bg);
+  color: var(--button-text);
   border: none;
   padding: 8px 16px;
   cursor: pointer;
   border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.themeButton:hover {
+  background-color: var(--button-hover-bg);
+}
+
+/* Mobile Navbar Optimization */
+@media screen and (max-width: 768px) {
+  .navbar {
+    padding: 10px 15px;
+    background-image: url('/Digital_Gallery_Images/IMG_3403_mobile.PNG'); /* Mobile background */
+    background-size: cover;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .profileMenu {
+    gap: 10px;
+  }
+
+  .themeButton {
+    padding: 5px 10px;
+    font-size: 14px;
+  }
 }
