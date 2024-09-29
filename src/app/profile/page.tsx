@@ -18,7 +18,7 @@ export default function ProfilePage() {
   if (!account)
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-        <h1 style={{ margin: "auto" }}>Log in to continue</h1>
+        <h1 style={{ margin: "auto" }}>Connect Wallet to continue</h1>
       </div>
     );
 

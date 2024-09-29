@@ -2,7 +2,7 @@
  * Global Theme Variables
  *******************************************************/
  :root {
-  --background: #3fafbe; /* Light theme background */
+  --background: #c2830c; /* Light theme background */
   --text-color: #130808; /* Main text color */
   --link-color: #c8d1e4; /* Link color */
   --link-hover-color: #dae1e9; /* Link hover color */
@@ -46,9 +46,15 @@ body {
 /*******************************************************
  * Utility Classes
  *******************************************************/
-.text-center { text-align: center; }
-.mt-20 { margin-top: 20px; }
-.mb-20 { margin-bottom: 20px; }
+.text-center {
+  text-align: center;
+}
+.mt-20 {
+  margin-top: 20px;
+}
+.mb-20 {
+  margin-bottom: 20px;
+}
 
 /*******************************************************
  * Links and Buttons
@@ -63,7 +69,8 @@ a:hover {
   text-decoration: underline;
 }
 
-button, .collection-button {
+button,
+.collection-button {
   background-color: var(--button-bg);
   color: var(--button-text);
   border: none;
@@ -74,7 +81,8 @@ button, .collection-button {
   border-radius: 5px; /* Common button radius */
 }
 
-button:hover, .collection-button:hover {
+button:hover,
+.collection-button:hover {
   background-color: var(--button-hover-bg);
   color: var(--link-hover-color); /* Change text color on hover */
 }
@@ -94,14 +102,16 @@ button:hover, .collection-button:hover {
   min-height: 100vh;
 }
 
-.container, .frame-content {
+.container,
+.frame-content {
   max-width: 1200px; /* Universal container width */
   margin: 0 auto;
   padding: 20px;
 }
 
-.box, .frame-content {
-  background: #fff;
+.box,
+.frame-content {
+  background: #c2830d;
   border: 1px solid #ccc;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Universal shadow */
@@ -115,8 +125,18 @@ button:hover, .collection-button:hover {
 }
 
 /*******************************************************
- * Navbar Styling (moved to separate Navbar.module.css)
+ * Navigation Section
  *******************************************************/
+.navigation-section {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.navigation-section .collection-button {
+  padding: 15px 25px; /* Larger button size */
+  font-size: 1rem; /* Increase text size */
+}
 
 /*******************************************************
  * Footer Styling
@@ -170,9 +190,10 @@ button:hover, .collection-button:hover {
  *******************************************************/
 .frame-container {
   position: relative;
-  width: 350px;
-  height: 350px;
+  width: 200px;
+  height: 200px;
   margin: 0 auto;
+  overflow: hidden; /* Hide overflow for cleaner effect */
 }
 
 .frame-container .frame-background {
@@ -199,16 +220,14 @@ button:hover, .collection-button:hover {
 /*******************************************************
  * Accordion Styling
  *******************************************************/
-/* Accordion Styling */
 .accordion-item {
   border: 1px solid #ccc;
   border-radius: 8px;
   margin-bottom: 10px;
-  max-width: 600px; /* Limit width to prevent stretching */
+  max-width: 600px;
   padding: 5px;
 }
 
-/* Accordion Button Styling */
 .accordion-button {
   background: #aa1616;
   padding: 10px;
@@ -226,40 +245,35 @@ button:hover, .collection-button:hover {
   background-color: #9c2e2e;
 }
 
-/* Accordion Content */
 .accordion-content {
   padding: 15px;
   border-top: 1px solid #a19292;
   display: flex;
   flex-direction: column;
-  gap: 10px; /* Add spacing between rows */
+  gap: 10px;
 }
 
-/* Accordion Details Row */
 .detail-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px 0; /* Space out rows */
+  padding: 5px 0;
 }
 
-/* Detail Title */
 .detail-title {
   font-weight: bold;
   margin-right: 10px;
 }
 
-/* Detail Link Styling */
 .link {
-  color: #3b82f6; /* Link color */
+  color: #3b82f6;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .link:hover {
-  color: #2563eb; /* Darker on hover */
+  color: #2563eb;
 }
-
 
 /*******************************************************
  * Loading Spinner
@@ -287,7 +301,9 @@ button:hover, .collection-button:hover {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /*******************************************************
@@ -302,6 +318,6 @@ button:hover, .collection-button:hover {
   }
 
   .navbar {
-    background: none; /* Remove background for mobile navbar */
+    background: none;
   }
 }
