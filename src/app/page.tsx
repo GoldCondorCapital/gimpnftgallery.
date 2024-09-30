@@ -10,14 +10,14 @@ const frameColors = ["#c2830c", "#ffcc00", "#ff5722", "#4caf50", "#3f51b5", "#e9
 export default function Home() {
   return (
     <div className="home-container">
-      {/* Welcome Section */}
-      <div className="welcome-section box frame-content">
+      {/* Welcome Section with Darker Background */}
+      <div className="welcome-section box frame-content dark-box">
         <h1 className="heading">Welcome to Ock's Digital Art Gallery</h1>
         <p className="subheading">Explore a vast collection of Digital Art and NFTs</p>
       </div>
 
       {/* Navigation Section */}
-      <div className="navigation-section frame-content">
+      <div className="navigation-section frame-content white-text">
         <Link href="/profile">
           <button className="collection-button">Your NFT Collection</button>
         </Link>
@@ -27,8 +27,7 @@ export default function Home() {
       </div>
 
       {/* Trending Collections Section */}
-      <h2 className="trending-heading">99 Billion Gimps by Ock</h2>
-      <div className="nft-grid frame-content">
+      <div className="nft-grid frame-content white-text">
         {NFT_CONTRACTS.map((item, index) => (
           <Link
             key={item.address}
@@ -38,15 +37,19 @@ export default function Home() {
               className="frame-container colored-frame"
               style={{ borderColor: frameColors[index % frameColors.length] }} // Apply dynamic frame color
             >
+              {/* Heading inside each frame box */}
+              <h2 className="frame-title">99 Billion Gimps by Ock</h2>
+
               {/* Background Image (Frame) */}
               <img
                 src={`/Digital_Gallery_Images/4.png`} // Placeholder background image for frame
                 alt="Frame"
                 className="frame-background"
               />
+              
               {/* Foreground Image (NFT Image) */}
               <img
-                src={`/Digital_Gallery_Images/background.png`} // New Image for NFTs
+                src={`/Digital_Gallery_Images/new batch 17_s.png`} // New Image for NFTs
                 alt={item.title}
                 className="nft-image"
               />
@@ -57,7 +60,7 @@ export default function Home() {
       </div>
 
       {/* Additional Content Box for Styling */}
-      <div className="extra-content-box frame-content">
+      <div className="extra-content-box frame-content white-text">
         <h2 className="heading">More to Explore</h2>
         <p className="subheading">Stay tuned for upcoming collections and surprises!</p>
       </div>

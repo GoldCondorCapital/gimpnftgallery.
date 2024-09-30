@@ -3,7 +3,7 @@
  *******************************************************/
  :root {
   --background: #c2830c; /* Light theme background */
-  --text-color: #130808; /* Main text color */
+  --text-color: #f3f0f0; /* Main text color */
   --link-color: #c8d1e4; /* Link color */
   --link-hover-color: #dae1e9; /* Link hover color */
   --button-bg: #171c24; /* Button background */
@@ -16,7 +16,7 @@
 
 body.dark-mode {
   --background: #1a202c;
-  --text-color: #ffffff;
+  --text-color: #b19191;
   --link-color: #ffffff;
   --link-hover-color: #dddddd; /* Dark mode link hover */
   --button-bg: #ffffff;
@@ -34,6 +34,14 @@ body.dark-mode {
   gap: 30px; /* Adds spacing between main sections */
   padding: 20px;
 }
+
+/* Add this CSS class in your global.css file */
+.dark-box {
+  background: rgba(0, 0, 0, 0.8); /* Darker background with some transparency */
+  border: 1px solid #333; /* Adjust border for better contrast */
+  color: #ffffff; /* White text color for better readability */
+}
+
 
 .welcome-section {
   max-width: 800px;
@@ -84,17 +92,31 @@ body.dark-mode {
 /*******************************************************
  * Frame Container Styling with Custom Colors
  *******************************************************/
- .frame-container {
+/* Frame Container Styling */
+.frame-container {
   position: relative;
   width: 200px;
-  height: 200px;
+  height: 300px; /* Increased height to accommodate the new heading */
   margin: 0 auto;
-  border: 4px solid transparent; /* Default transparent border */
-  padding: 10px;
-  border-radius: 15px; /* Rounder corners for a modern look */
-  transition: transform 0.3s ease, border-color 0.3s ease; /* Smooth border-color and transform */
   overflow: hidden; /* Hide overflow for cleaner effect */
+  border: 2px solid; /* Frame border */
 }
+
+/* Frame Title Styling */
+.frame-title {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.8); /* Slightly transparent background */
+  padding: 5px 10px;
+  border-radius: 8px;
+  z-index: 3;
+  font-size: 1rem;
+  color: var(--text-color);
+  font-weight: bold;
+}
+
 
 /* Dynamic Frame Colors */
 .colored-frame {
@@ -188,12 +210,16 @@ body.dark-mode {
 body {
   font-family: 'Arial', sans-serif;
   font-size: var(--font-size-base);
-  background-color: var(--background);
+  background-image: url('/Digital_Gallery_Images/backwall.webp'); /* Use the backwall image */
+  background-size: cover; /* Make sure the image covers the entire page */
+  background-repeat: no-repeat; /* Prevent the image from repeating */
+  background-position: center; /* Center the image */
   color: var(--text-color);
   margin: 0;
   padding: 0;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+
 
 /*******************************************************
  * Utility Classes
@@ -311,6 +337,80 @@ button:hover,
   padding: 15px 25px;
   font-size: 1rem;
 }
+
+/*******************************************************
+ * Text Color Adjustments for Middle Sections
+ *******************************************************/
+ .white-text {
+  color: #ffffff; /* Set text color to white */
+}
+
+/* Additional white text styling for specific sections */
+.navigation-section.white-text a, 
+.nft-grid.white-text .frame-title, 
+.extra-content-box.white-text {
+  color: #ffffff; /* Ensure links and headings in these sections are also white */
+}
+
+/* Styling for collection button text when in white text sections */
+.white-text .collection-button {
+  background-color: #ffffff; /* White button background */
+  color: #171c24; /* Dark text for contrast */
+}
+
+.white-text .collection-button:hover {
+  background-color: #cccccc; /* Change hover background color */
+}
+
+/*******************************************************
+ * Frame Title Styling
+ *******************************************************/
+.frame-title {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.6); /* Dark semi-transparent background */
+  padding: 5px 10px;
+  border-radius: 8px;
+  z-index: 3;
+  font-size: 1rem;
+  color: #ffffff; /* White text */
+  font-weight: bold;
+}
+
+/* Optional: Adjust the frame title on hover */
+.frame-container:hover .frame-title {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/*******************************************************
+ * Specific Component Styling for Frame Boxes
+ *******************************************************/
+.box {
+  background-color: rgba(255, 255, 255, 0.1); /* Adjust box styling */
+  color: #ffffff;
+  border: 2px solid #ffffff; /* White border for boxes */
+}
+
+.frame-content.white-text {
+  background: rgba(0, 0, 0, 0.4); /* Darker background for white text sections */
+}
+
+/*******************************************************
+ * Mobile View Optimizations for Text Color
+ *******************************************************/
+@media screen and (max-width: 768px) {
+  .white-text {
+    color: #ffffff;
+  }
+
+  .navigation-section.white-text {
+    background: rgba(0, 0, 0, 0.6); /* Darker background for mobile view */
+  }
+}
+
+
 
 /*******************************************************
  * NFT Grid and Card Styling
