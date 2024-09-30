@@ -18,7 +18,7 @@ export default function RootLayout({
       <body style={{ paddingBottom: "100px" }}>
         <Providers>
           {/* Ensure you pass actual chainId and contractAddress */}
-          <MarketplaceProvider chainId="56" contractAddress="0x142bB2aDF4782aEEd93EBFD641acb9B3037779D1">
+          <MarketplaceProvider chainId="56" contractAddress="0x4bA7161d0FAF245c0c8bA83890c121a3D9Fe3AC9">
             <Navbar />
             {/* Add a container to wrap around the children */}
             <div className="container">{children}</div>
