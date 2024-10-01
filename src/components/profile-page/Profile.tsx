@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import jdenticon from "jdenticon";
-import { shortenAddress } from "thirdweb/utils"; // Ensure thirdweb is installed
+import * as jdenticon from 'jdenticon';
+import { shortenAddress } from "thirdweb/utils";
 import { NFT_CONTRACTS, type NftContract } from "@/consts/nft_contracts";
-import { MediaRenderer, useActiveAccount, useReadContract } from "thirdweb/react";
+import { useActiveAccount, useReadContract } from "thirdweb/react";
 import { getContract, toEther } from "thirdweb";
 import { client } from "@/consts/client";
 import { ProfileMenu } from "../profile-page/Menu";
@@ -22,22 +22,16 @@ type Props = {
 
 // Function to generate an avatar using jdenticon based on the wallet address
 function generateAvatar(address: string) {
-  const size = 100; // Size of the avatar
-
-  // Check if jdenticon is properly imported and defined
+  const size = 100;
   if (!jdenticon || !jdenticon.toSvg) {
     console.error("jdenticon is not available");
-    return ""; // Return an empty string or a placeholder image if jdenticon is not defined
+    return "";
   }
-
-  return `data:image/svg+xml;utf8,${encodeURIComponent(
-    jdenticon.toSvg(address, size)
-  )}`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(jdenticon.toSvg(address, size))}`;
 }
 
 export function ProfileSection(props: Props) {
   const { address } = props;
-
   const account = useActiveAccount();
   const isYou = address.toLowerCase() === account?.address.toLowerCase();
 
@@ -55,12 +49,12 @@ export function ProfileSection(props: Props) {
     }
   }, [selectedCollection]);
 
-  const defaultChain = { rpc: "https://default-rpc-url.com", id: 1 }; // Replace with your default chain configuration
+  const defaultChain = { rpc: "https://default-rpc-url.com", id: 1 };
 
   const contract = selectedCollection
     ? getContract({
-        address: selectedCollection?.address ?? "", // Ensure address is not undefined
-        chain: selectedCollection?.chain ?? defaultChain, // Provide a fallback chain if it's undefined
+        address: selectedCollection?.address ?? "",
+        chain: selectedCollection?.chain ?? defaultChain,
         client,
       })
     : null;
@@ -84,7 +78,7 @@ export function ProfileSection(props: Props) {
 
   if (!marketplaceContractAddress) {
     console.error("No marketplace contract found");
-    return null; // Prevent further rendering if marketplace contract is missing
+    return null;
   }
 
   const marketplaceContract = getContract({
@@ -111,7 +105,7 @@ export function ProfileSection(props: Props) {
     <div className="profile-section-container">
       <div className="profile-header">
         <img
-          src={ensAvatar ?? generateAvatar(address)} // Updated avatar generation
+          src={ensAvatar ?? generateAvatar(address)}
           alt="Profile Avatar"
           className="profile-avatar"
         />
@@ -124,7 +118,7 @@ export function ProfileSection(props: Props) {
       <div className="profile-content">
         <ProfileMenu
           selectedCollection={selectedCollection}
-          setSelectedCollection={setSelectedCollection} // Allow setSelectedCollection to accept null
+          setSelectedCollection={setSelectedCollection}
         />
         {isLoadingOwnedNFTs ? (
           <div className="loading">Loading...</div>
@@ -179,9 +173,11 @@ export function ProfileSection(props: Props) {
                       className="nft-link"
                     >
                       <div className="nft-card-content">
-                        <MediaRenderer
-                          client={client}
+                        {/* Replace MediaRenderer with standard <img> */}
+                        <img
                           src={item.asset.metadata.image}
+                          alt={item.asset?.metadata?.name ?? "Unknown item"}
+                          className="nft-thumbnail"
                         />
                         <p>{item.asset?.metadata?.name ?? "Unknown item"}</p>
                         <p>Price</p>
@@ -191,9 +187,7 @@ export function ProfileSection(props: Props) {
                   </div>
                 ))
               ) : (
-                <div>
-                  You do not have any listing with this collection
-                </div>
+                <div>You do not have any listing with this collection</div>
               )}
             </div>
           </>

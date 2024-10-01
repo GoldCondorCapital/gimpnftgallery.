@@ -2,47 +2,27 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ethers } from 'ethers'; // Correct import for ethers v6
-import styles from '../../styles/Navbar.module.css'; // Correct relative path
+import { client } from '@/consts/client'; // Use the updated client
+import { useActiveAccount, useConnectModal } from "thirdweb/react"; // Use thirdweb hooks
+import styles from '../../styles/Navbar.module.css'; // CSS file for Navbar styling
 
 export function Navbar() {
   const [account, setAccount] = useState<string | null>(null);
+  const activeAccount = useActiveAccount(); // Check for active account
+  const { connect, disconnect } = useConnectModal(); // Use thirdweb's connect/disconnect
 
-  // Check if MetaMask is installed and connect to it
   useEffect(() => {
-    const checkMetaMaskConnection = async () => {
-      if (typeof window !== 'undefined' && window.ethereum) {
-        try {
-          const provider = new ethers.BrowserProvider(window.ethereum as ethers.Eip1193Provider); // Cast to Eip1193Provider
-          const signer = await provider.getSigner(); // Get the signer
-          const address = await signer.getAddress(); // Extract address
-          setAccount(address); // Set the address in the account state
-        } catch (error) {
-          console.error("Error fetching accounts", error);
-        }
-      }
-    };
-    checkMetaMaskConnection();
-  }, []);
-  
+    if (activeAccount) {
+      setAccount(activeAccount.address); // Set account if already connected
+    }
+  }, [activeAccount]);
 
   const handleLoginLogout = async () => {
     if (account) {
-      setAccount(null); // Disconnect wallet
+      setAccount(null); // Clear account on disconnect
+      disconnect(); // Call disconnect function
     } else {
-      if (typeof window !== 'undefined' && window.ethereum) {
-        try {
-          const provider = new ethers.BrowserProvider(window.ethereum as ethers.Eip1193Provider); // Cast to Eip1193Provider
-          await provider.send("eth_requestAccounts", []); // Prompt MetaMask to connect
-          const signer = await provider.getSigner(); // Await the promise to resolve the signer object
-          const userAccount = await signer.getAddress(); // Get the connected address
-          setAccount(userAccount); // Set account after successful connection
-        } catch (error) {
-          console.error("MetaMask connection failed", error);
-        }
-      } else {
-        alert('MetaMask is not installed. Please install it to use this feature.');
-      }
+      await connect({ client }); // Use the updated client configuration for connection
     }
   };
 

@@ -2,7 +2,7 @@
 
 import { client } from "@/consts/client";
 import { MARKETPLACE_CONTRACTS } from "@/consts/marketplace_contract";
-import { NFT_CONTRACTS } from "consts/nft_contracts";
+import { NFT_CONTRACTS } from "@/consts/nft_contracts";
 import { SUPPORTED_TOKENS, Token } from "@/consts/supported_tokens";
 import { getSupplyInfo, SupplyInfo } from "../extensions/getLargestCirculatingTokenId";
 import { createContext, type ReactNode, useContext } from "react";
@@ -10,23 +10,13 @@ import { getContract, type ThirdwebContract } from "thirdweb";
 import { getContractMetadata } from "thirdweb/extensions/common";
 import { isERC1155 } from "thirdweb/extensions/erc1155";
 import { isERC721 } from "thirdweb/extensions/erc721";
-import {
-  type DirectListing,
-  type EnglishAuction,
-  getAllAuctions,
-  getAllValidListings,
-} from "thirdweb/extensions/marketplace";
+import { type DirectListing, type EnglishAuction, getAllAuctions, getAllValidListings } from "thirdweb/extensions/marketplace";
 import { useReadContract } from "thirdweb/react";
-
-import "../styles/global.css";
+import "../styles/global.css"; // Import global styles
 
 export type NftType = "ERC1155" | "ERC721";
 
-/**
- * Support for English auction coming soon.
- */
-const SUPPORT_AUCTION = false;
-
+// Context type definition
 type TMarketplaceContext = {
   marketplaceContract: ThirdwebContract;
   nftContract: ThirdwebContract;
@@ -34,24 +24,18 @@ type TMarketplaceContext = {
   isLoading: boolean;
   allValidListings: DirectListing[] | undefined;
   allAuctions: EnglishAuction[] | undefined;
-  contractMetadata:
-    | {
-        [key: string]: any;
-        name: string;
-        symbol: string;
-      }
-    | undefined;
+  contractMetadata: Record<string, any> | undefined;
   refetchAllListings: Function;
   isRefetchingAllListings: boolean;
-  listingsInSelectedCollection: DirectListing[] | [];
+  listingsInSelectedCollection: DirectListing[];
   supplyInfo: SupplyInfo | undefined;
-  supportedTokens: Token[] | [];
+  supportedTokens: Token[];
 };
 
-const MarketplaceContext = createContext<TMarketplaceContext | undefined>(
-  undefined
-);
+// Create context for marketplace data
+const MarketplaceContext = createContext<TMarketplaceContext | undefined>(undefined);
 
+// Provider component for the marketplace context
 export default function MarketplaceProvider({
   chainId,
   contractAddress,
@@ -61,151 +45,41 @@ export default function MarketplaceProvider({
   contractAddress: string;
   children: ReactNode;
 }) {
-  let _chainId: number;
-
-  // Improved chainId parsing with logging
-  try {
-    if (!chainId || isNaN(Number(chainId))) {
-      throw new Error(`Invalid chain ID: ${chainId}`);
-    }
-    _chainId = Number.parseInt(chainId);
-    console.log("Parsed Chain ID:", _chainId);  // Debug: Log the parsed chain ID
-  } catch (err) {
-    console.error("Error parsing chain ID:", err);  // Debug: Log chain parsing error
-    throw new Error("Invalid chain ID");
-  }
-
-  // Find the marketplace contract for the given chain
-  const marketplaceContract = MARKETPLACE_CONTRACTS.find(
-    (item) => item.chain.id === _chainId
+  const { _chainId, marketplaceContract, collectionSupported } = useMarketplaceContracts(
+    chainId,
+    contractAddress
   );
-  console.log("Marketplace contract found:", marketplaceContract); // Debug: Log marketplace contract
 
-  if (!marketplaceContract) {
-    console.error("Marketplace not supported on this chain:", _chainId);  // Debug: Log unsupported chain
-    throw new Error("Marketplace not supported on this chain");
-  }
+  const nftContract = marketplaceContract
+  ? setupNFTContract(_chainId, contractAddress, marketplaceContract.chain)
+  : undefined;
 
-  // Find if the collection is supported on this marketplace
-  const collectionSupported = NFT_CONTRACTS.find(
-    (item) =>
-      item.address.toLowerCase() === contractAddress.toLowerCase() &&
-      item.chain.id === _chainId
+  const marketplace = setupMarketplaceContract(marketplaceContract);
+
+  const { is721, is1155, isLoading: isNftTypeLoading } = useNftTypeCheck(nftContract);
+
+  const { contractMetadata, isLoading: isMetadataLoading } = useContractMetadata(nftContract, is1155 || is721);
+
+  const { allValidListings, refetchAllListings, isRefetchingAllListings } = useListings(
+    marketplace,
+    is1155 || is721
   );
-  console.log("Collection supported:", collectionSupported);  // Debug: Log collection support
 
-  // Setup the NFT contract
-  const contract = getContract({
-    chain: marketplaceContract.chain,
-    client,
-    address: contractAddress.toLowerCase(), // Ensure address is in lowercase
-  });
-  console.log("NFT Contract:", contract); // Debug: Log NFT contract
+  const listingsInSelectedCollection = filterListings(allValidListings, nftContract);
 
-  // Setup the marketplace contract
-  const marketplace = getContract({
-    address: marketplaceContract.address,
-    chain: marketplaceContract.chain,
-    client,
-  });
-  console.log("Marketplace Contract:", marketplace); // Debug: Log marketplace contract
+  const { allAuctions, isLoading: isAuctionLoading } = useAuctions(marketplace, is1155 || is721);
 
-  // Check for ERC721 or ERC1155 contract type
-  const { data: is721, isLoading: isChecking721 } = useReadContract(isERC721, {
-    contract,
-    queryOptions: {
-      enabled: !!marketplaceContract,
-    },
-  });
-  console.log("Is ERC721:", is721, "Loading:", isChecking721); // Debug: Log ERC721 check
+  const { supplyInfo, isLoading: isSupplyInfoLoading } = useSupplyInfo(nftContract);
 
-  const { data: is1155, isLoading: isChecking1155 } = useReadContract(
-    isERC1155,
-    { contract, queryOptions: { enabled: !!marketplaceContract } }
-  );
-  console.log("Is ERC1155:", is1155, "Loading:", isChecking1155); // Debug: Log ERC1155 check
+  const supportedTokens = getSupportedTokens(marketplaceContract.chain.id);
 
-  const isNftCollection = is1155 || is721;
-  console.log("Is NFT Collection:", isNftCollection); // Debug: Log NFT collection type
-
-  if (!isNftCollection && !isChecking1155 && !isChecking721)
-    throw new Error("Not a valid NFT collection");
-
-  // Fetch contract metadata
-  const { data: contractMetadata, isLoading: isLoadingContractMetadata } =
-    useReadContract(getContractMetadata, {
-      contract,
-      queryOptions: {
-        enabled: isNftCollection,
-      },
-    });
-  console.log("Contract Metadata:", contractMetadata); // Debug: Log contract metadata
-
-  // Fetch all valid listings for the marketplace
-  const {
-    data: allValidListings,
-    isLoading: isLoadingValidListings,
-    refetch: refetchAllListings,
-    isRefetching: isRefetchingAllListings,
-  } = useReadContract(getAllValidListings, {
-    contract: marketplace,
-    queryOptions: {
-      enabled: isNftCollection,
-    },
-  });
-  console.log("All Valid Listings:", allValidListings); // Debug: Log all valid listings
-
-  // Filter listings for the selected collection
-  const listingsInSelectedCollection = allValidListings?.length
-    ? allValidListings.filter(
-        (item) =>
-          item.assetContractAddress.toLowerCase() ===
-          contract.address.toLowerCase()
-      )
-    : [];
-  console.log("Listings in Selected Collection:", listingsInSelectedCollection);  // Debug: Log selected collection listings
-
-  // Fetch all auctions for the marketplace (if auction is supported)
-  const { data: allAuctions, isLoading: isLoadingAuctions } = useReadContract(
-    getAllAuctions,
-    {
-      contract: marketplace,
-      queryOptions: { enabled: isNftCollection && SUPPORT_AUCTION },
-    }
-  );
-  console.log("All Auctions:", allAuctions);  // Debug: Log all auctions
-
-  // Fetch supply information for the NFT collection
-  const { data: supplyInfo, isLoading: isLoadingSupplyInfo } = useReadContract(
-    getSupplyInfo,
-    {
-      contract,
-    }
-  );
-  console.log("Supply Info:", supplyInfo);  // Debug: Log supply information
-
-  // Loading state
-  const isLoading =
-    isChecking1155 ||
-    isChecking721 ||
-    isLoadingAuctions ||
-    isLoadingContractMetadata ||
-    isLoadingValidListings ||
-    isLoadingSupplyInfo;
-  console.log("Is Loading:", isLoading);  // Debug: Log loading state
-
-  // Fetch supported tokens for the marketplace
-  const supportedTokens: Token[] =
-    SUPPORTED_TOKENS.find(
-      (item) => item.chain.id === marketplaceContract.chain.id
-    )?.tokens || [];
-  console.log("Supported Tokens:", supportedTokens);  // Debug: Log supported tokens
+  const isLoading = isNftTypeLoading || isMetadataLoading || isAuctionLoading || isSupplyInfoLoading;
 
   return (
     <MarketplaceContext.Provider
       value={{
         marketplaceContract: marketplace,
-        nftContract: contract,
+        nftContract,
         isLoading,
         type: is1155 ? "ERC1155" : "ERC721",
         allValidListings,
@@ -219,21 +93,120 @@ export default function MarketplaceProvider({
       }}
     >
       {children}
-      {isLoading && (
-        <div className="loading-overlay">
-          <div className="spinner"></div>
-        </div>
-      )}
+      {isLoading && <LoadingOverlay />} {/* Use LoadingOverlay component */}
     </MarketplaceContext.Provider>
   );
 }
 
+// Loading overlay component using standard HTML and global CSS
+function LoadingOverlay() {
+  return (
+    <div className="loading-overlay">
+      <div className="spinner"></div>
+    </div>
+  );
+}
+
+// Utility functions and hooks for cleaner component logic
+
+// Centralized hook to check for ERC1155 or ERC721 types
+function useNftTypeCheck(contract: ThirdwebContract) {
+  const { data: is721, isLoading: is721Loading } = useReadContract(isERC721, { contract });
+  const { data: is1155, isLoading: is1155Loading } = useReadContract(isERC1155, { contract });
+  return { is721, is1155, isLoading: is721Loading || is1155Loading };
+}
+
+// Fetch and handle contract metadata
+function useContractMetadata(contract: ThirdwebContract, isEnabled: boolean) {
+  return useReadContract(getContractMetadata, { contract, queryOptions: { enabled: isEnabled } });
+}
+
+// Fetch and manage all listings for the marketplace
+function useListings(marketplace: ThirdwebContract, isEnabled: boolean) {
+  const { data, refetch, isRefetching } = useReadContract(getAllValidListings, {
+    contract: marketplace,
+    queryOptions: { enabled: isEnabled },
+  });
+  return { allValidListings: data, refetchAllListings: refetch, isRefetchingAllListings: isRefetching };
+}
+
+// Filter listings based on selected collection
+function filterListings(listings: DirectListing[] | undefined, nftContract: ThirdwebContract) {
+  return listings?.filter(
+    (item) => item.assetContractAddress.toLowerCase() === nftContract.address.toLowerCase()
+  ) || [];
+}
+
+function useAuctions(marketplace: ThirdwebContract, isEnabled: boolean) {
+  // Ensure that both conditions are properly defined and valid
+  const isQueryEnabled = typeof isEnabled === 'boolean' && SUPPORT_AUCTION;
+
+  // Log the values to ensure they are correct (for debugging)
+  console.log("isQueryEnabled: ", isQueryEnabled);
+
+  // Use the updated `isQueryEnabled` value in `queryOptions`
+  return useReadContract(getAllAuctions, {
+    contract: marketplace,
+    queryOptions: { enabled: isQueryEnabled },
+  });
+}
+
+
+
+  // Use the updated `isQueryEnabled` value in `queryOptions`
+  return useReadContract(getAllAuctions, {
+    contract: marketplace,
+    queryOptions: { enabled: isQueryEnabled },
+  });
+}
+
+
+// Fetch supply information
+function useSupplyInfo(contract: ThirdwebContract) {
+  return useReadContract(getSupplyInfo, { contract });
+}
+
+// Setup the NFT contract
+function setupNFTContract(chainId: number, address: string, chain: any) {
+  return getContract({ address: address.toLowerCase(), chain, client });
+}
+
+// Setup the marketplace contract
+function setupMarketplaceContract(marketplaceContract: any) {
+  return getContract({ address: marketplaceContract.address, chain: marketplaceContract.chain, client });
+}
+
+// Parse and validate marketplace contracts
+function useMarketplaceContracts(chainId: string, contractAddress: string) {
+  const _chainId = parseChainId(chainId);
+  const marketplaceContract = MARKETPLACE_CONTRACTS.find((item) => item.chain.id === _chainId);
+  const collectionSupported = NFT_CONTRACTS.find(
+    (item) => item.address.toLowerCase() === contractAddress.toLowerCase() && item.chain.id === _chainId
+  );
+  return { _chainId, marketplaceContract, collectionSupported };
+}
+
+// Parse and validate the chain ID
+function parseChainId(chainId: string) {
+  try {
+    const parsedId = Number.parseInt(chainId);
+    if (isNaN(parsedId)) throw new Error(`Invalid chain ID: ${chainId}`);
+    return parsedId;
+  } catch (err) {
+    throw new Error(`Error parsing chain ID: ${err}`);
+  }
+}
+
+// Get supported tokens for a given chain
+function getSupportedTokens(chainId: number) {
+  return SUPPORTED_TOKENS.find((item) => item.chain.id === chainId)?.tokens || [];
+}
+
+// Hook to access the marketplace context
 export function useMarketplaceContext() {
   const context = useContext(MarketplaceContext);
-  if (context === undefined) {
-    throw new Error(
-      "useMarketplaceContext must be used inside MarketplaceProvider"
-    );
+  if (!context) {
+    throw new Error("useMarketplaceContext must be used inside MarketplaceProvider");
   }
   return context;
 }

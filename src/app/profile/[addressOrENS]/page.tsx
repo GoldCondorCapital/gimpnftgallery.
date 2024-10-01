@@ -1,37 +1,33 @@
 "use client";
 
 import { ProfileSection } from "@/components/profile-page/Profile";
-import { useResolveENSAddress } from '../../../hooks/useResolveENSAddress';
+import { client } from "@/consts/client"; // Import updated client
+import { useEffect } from "react";
+import { useActiveAccount, useConnectModal } from "thirdweb/react";
 
-import { notFound } from "next/navigation";
-import { isAddress } from "thirdweb/utils";
+export default function ProfilePage() {
+  const account = useActiveAccount();
+  const { connect } = useConnectModal();
 
-export default function PublicProfilePage({
-  params,
-}: {
-  params: { addressOrENS: string };
-}) {
-  const { addressOrENS } = params;
-  const isValidEvmAddress = isAddress(addressOrENS);
+  useEffect(() => {
+    if (!account) {
+      connect({ client }); // Use the updated client with wallet options
+    }
+  }, [account, connect]);
 
-  const { data: resolvedAddress, isLoading } = useResolveENSAddress({
-    text: addressOrENS,
-    enabled: !isValidEvmAddress,
-  });
-
-  if (isLoading) {
+  if (!account)
     return (
-      <div className="loading-container">
-        <p>Loading...</p>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <h1 style={{ margin: "auto" }}>Connect Wallet to continue</h1>
       </div>
     );
-  }
 
-  if (!isValidEvmAddress && !resolvedAddress) {
-    return notFound();
-  }
-
-  const address = isValidEvmAddress ? addressOrENS : resolvedAddress!;
-
-  return <ProfileSection address={address} />;
+  return <ProfileSection address={account.address} />;
 }

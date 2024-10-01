@@ -1,102 +1,67 @@
-"use client";
-
-import { client } from "@/consts/client";
-import { useMarketplaceContext } from "../../hooks/useMarketplaceContext";
-import Link from "next/link";
+import { useReadContract } from "thirdweb/react"; // Ensure this is correctly imported
+import { getNFTs as getNFTs1155 } from "thirdweb/extensions/erc1155"; // Import the ERC1155 function
+import { getNFTs as getNFTs721 } from "thirdweb/extensions/erc721"; // Import the ERC721 function
 import { useState } from "react";
-import { MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
-import { getNFTs as getNFTs1155 } from "thirdweb/extensions/erc1155";
-import { getNFTs as getNFTs721 } from "thirdweb/extensions/erc721";
-import { MediaRenderer, useReadContract } from "thirdweb/react";
-import "../../styles//global.css";
+import { useMarketplaceContext } from "../../hooks/useMarketplaceContext";
+import "../../styles/global.css";
 
 export function AllNftsGrid() {
-  const [itemsPerPage, setItemsPerPage] = useState<number>(20);
-  const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
+  const [currentPageIndex, setCurrentPageIndex] = useState(0);
   const { nftContract, type, supplyInfo } = useMarketplaceContext();
+
+  const itemsPerPage = 20;
   const startTokenId = supplyInfo?.startTokenId ?? 0n;
-  const totalItems: bigint = supplyInfo
+  const totalItems = supplyInfo
     ? supplyInfo.endTokenId - supplyInfo.startTokenId + 1n
     : 0n;
-  const numberOfPages: number = Number(
+
+  const numberOfPages = Number(
     (totalItems + BigInt(itemsPerPage) - 1n) / BigInt(itemsPerPage)
   );
-  const pages: { start: number; count: number }[] = [];
+  const pages = [];
 
   for (let i = 0; i < numberOfPages; i++) {
     const currentStartTokenId = startTokenId + BigInt(i * itemsPerPage);
     const remainingItems = totalItems - BigInt(i * itemsPerPage);
-    const count =
-      remainingItems < BigInt(itemsPerPage)
-        ? Number(remainingItems)
-        : itemsPerPage;
+    const count = remainingItems < BigInt(itemsPerPage) ? Number(remainingItems) : itemsPerPage;
     pages.push({ start: Number(currentStartTokenId), count: count });
   }
-  const { data: allNFTs } = useReadContract(
+
+  const safePageIndex = Math.min(currentPageIndex, pages.length - 1);
+
+  // Use the correct function reference based on the contract type
+  const { data: allNFTs, isLoading } = useReadContract(
     type === "ERC1155" ? getNFTs1155 : getNFTs721,
     {
       contract: nftContract,
-      start: pages[currentPageIndex].start,
-      count: pages[currentPageIndex].count,
+      start: pages[safePageIndex]?.start || 0,
+      count: pages[safePageIndex]?.count || itemsPerPage,
     }
   );
-  const len = allNFTs?.length ?? 0;
 
-  console.log({ pages, currentPageIndex, length: pages.length });
+  if (!allNFTs && !isLoading) return <div>No NFTs found in this collection.</div>;
 
   return (
-    <>
-      <div className="nft-grid-container">
-        {allNFTs && allNFTs.length > 0 ? (
-          allNFTs.map((item) => (
-            <div className="nft-card" key={item.id}>
-              <Link href={`/collection/${nftContract.chain.id}/${nftContract.address}/token/${item.id.toString()}`}>
-                <div className="nft-card-content">
-                  <MediaRenderer client={client} src={item.metadata.image} />
-                  <p>{item.metadata?.name ?? "Unknown item"}</p>
-                </div>
-              </Link>
+    <div className="nft-grid-container">
+      {allNFTs && allNFTs.length > 0 ? (
+        allNFTs.map((item) => (
+          <div className="nft-card" key={item.id}>
+            <div className="nft-card-content">
+              {/* Display the NFT image only if it's available */}
+              {item.metadata.image && (
+                <img
+                  src={item.metadata.image}
+                  alt={item.metadata?.name || "NFT Image"}
+                  className="nft-image"
+                />
+              )}
+              <p className="nft-name">{item.metadata?.name || "Unknown item"}</p>
             </div>
-          ))
-        ) : (
-          <div className="loading">Loading...</div>
-        )}
-      </div>
-
-      <div className="pagination-container">
-        <button
-          onClick={() => setCurrentPageIndex(0)}
-          disabled={currentPageIndex === 0}
-          className="pagination-button"
-        >
-          <MdKeyboardDoubleArrowLeft />
-        </button>
-        <button
-          disabled={currentPageIndex === 0}
-          onClick={() => setCurrentPageIndex(currentPageIndex - 1)}
-          className="pagination-button"
-        >
-          <RiArrowLeftSLine />
-        </button>
-        <span>
-          Page {currentPageIndex + 1} of {pages.length}
-        </span>
-        <button
-          disabled={currentPageIndex === pages.length - 1}
-          onClick={() => setCurrentPageIndex(currentPageIndex + 1)}
-          className="pagination-button"
-        >
-          <RiArrowRightSLine />
-        </button>
-        <button
-          onClick={() => setCurrentPageIndex(pages.length - 1)}
-          disabled={currentPageIndex === pages.length - 1}
-          className="pagination-button"
-        >
-          <MdKeyboardDoubleArrowRight />
-        </button>
-      </div>
-    </>
+          </div>
+        ))
+      ) : (
+        <div className="loading">Loading...</div>
+      )}
+    </div>
   );
 }

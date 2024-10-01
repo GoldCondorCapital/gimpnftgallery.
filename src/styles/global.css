@@ -2,224 +2,77 @@
  * Global Theme Variables
  *******************************************************/
  :root {
-  --background: #c2830c; /* Light theme background */
-  --text-color: #f3f0f0; /* Main text color */
-  --link-color: #c8d1e4; /* Link color */
-  --link-hover-color: #dae1e9; /* Link hover color */
-  --button-bg: #171c24; /* Button background */
-  --button-hover-bg: #333; /* Button hover background */
-  --button-text: #fff; /* Button text color */
-  --font-size-base: 16px; /* Base font size */
-  --font-size-heading: 2rem; /* Heading font size */
-  --font-size-small: 0.875rem; /* Small font size */
+  --background: #c2830c;
+  --text-color: #f3f0f0;
+  --link-color: #c8d1e4;
+  --link-hover-color: #dae1e9;
+  --button-bg: #171c24;
+  --button-hover-bg: #333;
+  --button-text: #fff;
+  --font-size-base: 16px;
+  --font-size-heading: 2rem;
+  --font-size-small: 0.875rem;
 }
 
 body.dark-mode {
   --background: #1a202c;
   --text-color: #b19191;
   --link-color: #ffffff;
-  --link-hover-color: #dddddd; /* Dark mode link hover */
   --button-bg: #ffffff;
-  --button-hover-bg: #cccccc; /* Dark mode button hover */
   --button-text: #1a202c;
 }
 
 /*******************************************************
- * Home Page Component-Specific Styles
+ *useMarkeptplaceContxt
  *******************************************************/
- .home-container {
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  gap: 30px; /* Adds spacing between main sections */
-  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
-/* Add this CSS class in your global.css file */
-.dark-box {
-  background: rgba(0, 0, 0, 0.8); /* Darker background with some transparency */
-  border: 1px solid #333; /* Adjust border for better contrast */
-  color: #ffffff; /* White text color for better readability */
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top: 5px solid #6a1b9a;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
-
-.welcome-section {
-  max-width: 800px;
-  padding: 20px;
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.navigation-section {
-  display: flex;
-  gap: 30px; /* Space out the navigation buttons */
-  justify-content: center;
-  margin-bottom: 40px;
-}
-
-.trending-heading {
-  margin-top: 20px;
-  font-size: 1.8rem;
-}
-
-.extra-content-box {
-  margin-top: 50px;
-  padding: 20px 40px;
-  text-align: center;
-  background: var(--button-bg); /* Use button background for extra box */
-  color: var(--button-text);
-  border-radius: 10px;
-}
-
-.nft-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 40px; /* Increase spacing between the grid items */
-  padding: 30px;
-  justify-content: center;
-}
-
-.frame-container {
-  border: 1px solid #ccc; /* Add frame border */
-  padding: 10px; /* Add padding around frame container */
-  transition: transform 0.3s ease;
-}
-
-.frame-container:hover {
-  transform: translateY(-5px); /* Lift effect on hover */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Enhance shadow on hover */
-}
 
 
 /*******************************************************
- * Frame Container Styling with Custom Colors
+ * Base Styles and Reset
  *******************************************************/
-/* Frame Container Styling */
-.frame-container {
-  position: relative;
-  width: 200px;
-  height: 300px; /* Increased height to accommodate the new heading */
-  margin: 0 auto;
-  overflow: hidden; /* Hide overflow for cleaner effect */
-  border: 2px solid; /* Frame border */
-}
-
-/* Frame Title Styling */
-.frame-title {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.8); /* Slightly transparent background */
-  padding: 5px 10px;
-  border-radius: 8px;
-  z-index: 3;
-  font-size: 1rem;
-  color: var(--text-color);
-  font-weight: bold;
-}
-
-
-/* Dynamic Frame Colors */
-.colored-frame {
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
-}
-
-.frame-container:hover {
-  transform: scale(1.05); /* Slightly lift the frame on hover */
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3); /* Enhance shadow on hover */
-}
-
-.nft-image {
-  position: absolute;
-  z-index: 2;
-  width: 60%;
-  height: 60%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 8px;
-  transition: transform 0.3s ease; /* Add smooth zoom effect */
-}
-
-.frame-container:hover .nft-image {
-  transform: translate(-50%, -50%) scale(1.1); /* Zoom in on hover */
-}
-
-/*******************************************************
- * Additional Styling for Home Page
- *******************************************************/
-.home-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px; /* Adds spacing between main sections */
-  padding: 20px;
-}
-
-.welcome-section {
-  max-width: 800px;
-  padding: 20px;
-}
-
-.navigation-section {
-  display: flex;
-  gap: 30px; /* Space out the navigation buttons */
-  justify-content: center;
-  margin-bottom: 40px;
-}
-
-.trending-heading {
-  margin-top: 20px;
-  font-size: 1.8rem;
-}
-
-.extra-content-box {
-  margin-top: 50px;
-  padding: 20px 40px;
-  text-align: center;
-  background: var(--button-bg); /* Use button background for extra box */
-  color: var(--button-text);
-  border-radius: 10px;
-}
-
-.nft-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 40px; /* Increase spacing between the grid items */
-  padding: 30px;
-  justify-content: center;
-}
-
-.nft-title {
-  margin-top: 10px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: var(--text-color);
-  z-index: 2;
-}
-
-
-/*******************************************************
- * Reset and Base Styles
- *******************************************************/
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
   font-family: 'Arial', sans-serif;
   font-size: var(--font-size-base);
-  background-image: url('/Digital_Gallery_Images/backwall.webp'); /* Use the backwall image */
-  background-size: cover; /* Make sure the image covers the entire page */
-  background-repeat: no-repeat; /* Prevent the image from repeating */
-  background-position: center; /* Center the image */
+  background: var(--background);
   color: var(--text-color);
   margin: 0;
   padding: 0;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 /*******************************************************
  * Utility Classes
@@ -235,7 +88,69 @@ body {
 }
 
 /*******************************************************
- * Links and Buttons
+ * Layout and Container Styling
+ *******************************************************/
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.full-height-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  padding: 20px;
+}
+
+/*******************************************************
+ * Component and Section Styling
+ *******************************************************/
+.navigation-section {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.extra-content-box,
+.box {
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  background: var(--button-bg);
+  color: var(--button-text);
+}
+
+.heading {
+  font-size: var(--font-size-heading);
+  margin: 20px 0;
+  color: var(--text-color);
+}
+
+.subheading,
+.nft-title,
+.nft-price,
+.nft-price-label {
+  font-size: 1rem;
+}
+
+.nft-title {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/*******************************************************
+ * Buttons and Links
  *******************************************************/
 a {
   color: var(--link-color);
@@ -249,168 +164,19 @@ a:hover {
 
 button,
 .collection-button {
-  background-color: var(--button-bg);
+  background: var(--button-bg);
   color: var(--button-text);
-  border: none;
   padding: 10px 20px;
-  font-size: var(--font-size-base);
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  border: none;
   border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 button:hover,
 .collection-button:hover {
-  background-color: var(--button-hover-bg);
-  color: var(--link-hover-color);
+  background: var(--button-hover-bg);
 }
-
-.collection-button {
-  display: inline-block;
-  margin-left: 20px;
-  text-decoration: none;
-}
-
-/*******************************************************
- * Layout and Container Styling
- *******************************************************/
-.full-height-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.container,
-.frame-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.box,
-.frame-content {
-  background: #c2830d;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin: 20px auto;
-}
-
-.frame-content {
-  width: 80%;
-  max-width: 800px;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-}
-
-/*******************************************************
- * Home Page Styling
- *******************************************************/
-.home-container {
-  padding: 30px;
-  text-align: center;
-}
-
-.welcome-section {
-  margin-bottom: 40px;
-}
-
-.heading {
-  font-size: var(--font-size-heading);
-  color: var(--text-color);
-}
-
-.subheading {
-  margin-top: 10px;
-  font-size: 1.2rem;
-  color: var(--text-color);
-}
-
-/* Navigation Button Styling */
-.navigation-section {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 40px;
-}
-
-.navigation-section .collection-button {
-  padding: 15px 25px;
-  font-size: 1rem;
-}
-
-/*******************************************************
- * Text Color Adjustments for Middle Sections
- *******************************************************/
- .white-text {
-  color: #ffffff; /* Set text color to white */
-}
-
-/* Additional white text styling for specific sections */
-.navigation-section.white-text a, 
-.nft-grid.white-text .frame-title, 
-.extra-content-box.white-text {
-  color: #ffffff; /* Ensure links and headings in these sections are also white */
-}
-
-/* Styling for collection button text when in white text sections */
-.white-text .collection-button {
-  background-color: #ffffff; /* White button background */
-  color: #171c24; /* Dark text for contrast */
-}
-
-.white-text .collection-button:hover {
-  background-color: #cccccc; /* Change hover background color */
-}
-
-/*******************************************************
- * Frame Title Styling
- *******************************************************/
-.frame-title {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.6); /* Dark semi-transparent background */
-  padding: 5px 10px;
-  border-radius: 8px;
-  z-index: 3;
-  font-size: 1rem;
-  color: #ffffff; /* White text */
-  font-weight: bold;
-}
-
-/* Optional: Adjust the frame title on hover */
-.frame-container:hover .frame-title {
-  background: rgba(0, 0, 0, 0.8);
-}
-
-/*******************************************************
- * Specific Component Styling for Frame Boxes
- *******************************************************/
-.box {
-  background-color: rgba(255, 255, 255, 0.1); /* Adjust box styling */
-  color: #ffffff;
-  border: 2px solid #ffffff; /* White border for boxes */
-}
-
-.frame-content.white-text {
-  background: rgba(0, 0, 0, 0.4); /* Darker background for white text sections */
-}
-
-/*******************************************************
- * Mobile View Optimizations for Text Color
- *******************************************************/
-@media screen and (max-width: 768px) {
-  .white-text {
-    color: #ffffff;
-  }
-
-  .navigation-section.white-text {
-    background: rgba(0, 0, 0, 0.6); /* Darker background for mobile view */
-  }
-}
-
-
 
 /*******************************************************
  * NFT Grid and Card Styling
@@ -424,132 +190,31 @@ button:hover,
   margin: 0 auto;
 }
 
+.nft-thumbnail,
+.nft-image {
+  width: 100%;
+  height: 150px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #ccc;
+}
+
 .frame-container {
   position: relative;
   width: 180px;
   height: 180px;
   margin: 0 auto;
+  border: 2px solid #ddd;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.frame-container .frame-background {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  object-fit: cover;
-}
-
-.frame-container .nft-image {
-  position: absolute;
-  z-index: 2;
-  width: 60%;
-  height: 60%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 8px;
-}
-
-.nft-title {
-  margin-top: 10px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: var(--text-color);
+.frame-container:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
 }
 
 /*******************************************************
- * Accordion Styling
- *******************************************************/
-.accordion-item {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  max-width: 600px;
-  padding: 5px;
-}
-
-.accordion-button {
-  background: #aa1616;
-  padding: 10px;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  border: none;
-  border-radius: 8px;
-  transition: background-color 0.3s ease;
-}
-
-.accordion-button:hover {
-  background-color: #9c2e2e;
-}
-
-.accordion-content {
-  padding: 15px;
-  border-top: 1px solid #a19292;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.detail-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px 0;
-}
-
-.detail-title {
-  font-weight: bold;
-  margin-right: 10px;
-}
-
-.link {
-  color: #3b82f6;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.link:hover {
-  color: #2563eb;
-}
-
-/*******************************************************
- * Loading Spinner
- *******************************************************/
-.loading-overlay {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 10px;
-  border-radius: 10px;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid #6a1b9a;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/*******************************************************
- * Mobile View Optimizations
+ * Responsive Styling
  *******************************************************/
 @media screen and (max-width: 768px) {
   .home-container {
@@ -558,10 +223,6 @@ button:hover,
 
   .heading {
     font-size: 1.8rem;
-  }
-
-  .subheading {
-    font-size: 1rem;
   }
 
   .navigation-section {
@@ -577,9 +238,5 @@ button:hover,
   .frame-container {
     width: 150px;
     height: 150px;
-  }
-
-  .nft-title {
-    font-size: 0.95rem;
   }
 }

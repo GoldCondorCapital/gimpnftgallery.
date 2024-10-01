@@ -12,7 +12,7 @@ import "../styles/global.css"; // Import global styles
 
 // Create a ThirdwebClient instance
 const client = createThirdwebClient({
-  clientId: "<your_client_id>", // Replace this with your actual client ID
+  clientId: "NEXT_PUBLIC_TW_CLIENT_ID", // Replace this with your actual client ID
 });
 
 export function SideMenu() {

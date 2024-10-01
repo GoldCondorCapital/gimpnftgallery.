@@ -1,0 +1,65 @@
+[33m15ba1db[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m first commit
+[33mf218c12[m update background
+[33m742d57a[m update contract, background, layout etc
+[33mf2ecb13[m updating css and gallery
+[33m736c335[m Updated ProfileSection component, optimized avatar generation, and fixed layout issues.
+[33mff8c860[m Added NFT image overlay on frame and updated styles
+[33me16f0a6[m Refactor layout, added global.d.ts and MetaMask connection in Navbar.tsx
+[33m19b3951[m Refactor: Remove Chakra UI, update Navbar and Providers components
+[33m10daa21[m Refactor layout and clean up unnecessary files
+[33m38f149f[m Initial commit for The Digital Art Gallery
+[33m887b53f[m Configured to use only BSC chain
+[33mf1d3863[m Initial commit
+[33ma126a13[m Merge pull request #19 from Yash094/main
+[33mb22bfa2[m Update BuyFromListingButton.tsx
+[33m64e05f8[m Update BuyFromListingButton.tsx
+[33m671d2ac[m remove console statement
+[33mfc067f6[m add approval while buying for custom ERC-20
+[33m0258cf0[m Merge branch 'main' of https://github.com/thirdweb-example/marketplace-template
+[33m301644d[m Add Sidemenu - fix responsiveness
+[33m6fba2e4[m Update README.md
+[33m60efa5a[m Merge pull request #13 from Yash094/main
+[33m4d78588[m fix path for matic icon for polygon amoy
+[33m49f839e[m Add code for 1155 and fix approval error when creating listing
+[33m2fa94bb[m UI Fix
+[33m4cffe24[m Update :P
+[33m9860d59[m chakra theme clean-up
+[33m3a63a4d[m Update package
+[33m6510852[m Fix contrast 2
+[33maa3c0dd[m Fix contrast
+[33m2705035[m Merge pull request #8 from thirdweb-example/issue-1
+[33mfb0a848[m Fix
+[33m57feae3[m Public Profile page
+[33mf06b0e8[m ENS
+[33m9b2f472[m Update
+[33m77248c6[m Multiple-currency support
+[33m37430da[m Merge pull request #3 from thirdweb-example/kien/all-nfts-tab
+[33m64df6bc[m Update AllNftsGrid.tsx
+[33m408d3b9[m Update
+[33m026379a[m Add support for ETH Sepolia
+[33ma005643[m Update
+[33m87c6389[m Update
+[33ma3c65ea[m Update
+[33mb4dba6a[m Update
+[33mdd73b74[m Fix style for Grid
+[33m641ea1b[m Update styling
+[33m2396bae[m SmpleGrid
+[33mc56dd15[m Fix price
+[33mcf9f4be[m Add related listings
+[33mba5eed5[m Update stuff
+[33mf30b3e6[m Test
+[33m90dd7da[m Update chakra.ts
+[33mb1142c3[m Update
+[33ma87dc89[m Merge branch 'main' of https://github.com/thirdweb-example/marketplace-template
+[33m29731b8[m Update
+[33ma397566[m Update theme
+[33me426d8c[m Fix theme zzz
+[33mb849fda[m Fix
+[33m281d6cd[m Dark theme by default
+[33m5cb6b3e[m Update
+[33m691220f[m Update
+[33m32d361d[m Update page.tsx
+[33m058ddf0[m Confgi
+[33m2e0b1cc[m Add code
+[33m3d6b839[m Add code
+[33mc91c9ae[m Initial commit from Create Next App

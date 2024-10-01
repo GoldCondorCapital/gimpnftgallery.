@@ -42,17 +42,12 @@ export default function Home() {
 
               {/* Background Image (Frame) */}
               <img
-                src={`/Digital_Gallery_Images/4.png`} // Placeholder background image for frame
+                src={`/Digital_Gallery_Images/background.png`} // Placeholder background image for frame
                 alt="Frame"
-                className="frame-background"
+                className="nft-thumbnail"
               />
               
-              {/* Foreground Image (NFT Image) */}
-              <img
-                src={`/Digital_Gallery_Images/new batch 17_s.png`} // New Image for NFTs
-                alt={item.title}
-                className="nft-image"
-              />
+              
               <p className="nft-title">{item.title}</p>
             </div>
           </Link>

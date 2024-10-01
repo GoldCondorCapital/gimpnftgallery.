@@ -22,7 +22,6 @@ export default function CancelListingButton(props: Props) {
   const notify = (message: string, type: "success" | "error") => {
     // Simple browser notification logic; replace with any notification service
     alert(`${type.toUpperCase()}: ${message}`);
-    console.log(`[${type}] ${message}`);
   };
 
   return (
